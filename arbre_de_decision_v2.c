@@ -3,15 +3,15 @@
 #include <string.h>
 #include <math.h>
 
-char ** extraction_fichier(FILE fichier){
+char ** extraction_fichier(char* fichier){
     int nbr_lignes=0,nbr_mots=0,i=0,j=0,pos=0;
     char c;
     char mot[20];
     char ** tableau;
-    FILE * fd=open(fichier,"r");
+    FILE * fd=fopen(fichier,"r");
     //on calcule le nombre de ligne et le nombre de mot de la premiere ligne pour malloc notre tableau
     while(EOF){
-        c=fgetc(fd)
+        c=fgetc(fd);
         if(nbr_lignes==0 && c==' '){
             nbr_mots++;
         }
@@ -23,7 +23,7 @@ char ** extraction_fichier(FILE fichier){
     //On revient au debut du fichier
     tableau=malloc(sizeof(char *)*nbr_lignes); //On initialise notre tableau de chaine de caractère
     for(i=0;i<nbr_lignes;i++){
-        tableau[i]=malloc(sizeof(char)*nbr_mots+1); //On rajoute 1 pour les etiquettes
+        tableau[i]=malloc(sizeof(char *)*nbr_mots+1); //On rajoute 1 pour les etiquettes
     }  
     while(EOF){ //On recupere les donnees du fichier
         for(j=0;j<nbr_mots;j++){
@@ -44,5 +44,5 @@ char ** extraction_fichier(FILE fichier){
 
 int main(){
     char ** e=extraction_fichier("test.txt");
-    printf("%s"e[0][0]);
+    printf("%s",e[0][0]);
 }
