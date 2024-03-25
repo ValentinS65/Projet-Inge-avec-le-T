@@ -13,7 +13,7 @@ typedef struct stockage{
 
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
-        if(mot==l[i]){
+        if(strcmp(mot,l[i])==0){
             return 1;
         }
     }
@@ -72,9 +72,8 @@ stockage extraction_fichier(char * fichier){
                 pos++;
                 printf(" c:%c ",c);
             }
-            mot[pos]='\n';
+            mot[pos]='\0';
             tableau[i][j]=strdup(mot);
-            free(mot);
         }
         i++;
     }
@@ -82,8 +81,7 @@ stockage extraction_fichier(char * fichier){
     s.liste_etiquette=cherche_etiquette(s);
     s.liste_attributs_dispo=tableau[0];
     fclose(fd);
-    s.nbr_exemples=nbr_lignes;
-    s.nbr_attributs=nbr_mots;
+
     return s;
 
 }
@@ -100,7 +98,14 @@ void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
 
 void free_stockage(stockage *s) {
     free_tableau(s->tableau, s->nbr_exemples, s->nbr_attributs);
+    for (int i=0;i<s->nbr_attributs;i++){
+        free(s->liste_attributs_dispo[i]);
+    }
     free(s->liste_attributs_dispo);
+    
+    for (int i = 0; i < s->nbr_exemples; i++) {
+        free(s->liste_etiquette[i]);
+    }
     free(s->liste_etiquette);
 }
 
