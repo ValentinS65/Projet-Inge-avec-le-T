@@ -11,7 +11,29 @@ typedef struct stockage{
     int nbr_exemples;
 }stockage;
 
+int inList(char ** l, char * mot,int taille){
+    for(int i=0;i<taille;i++){
+        if(mot==l[i]){
+            return 1;
+        }
+    }
+    return 0;
 
+}
+
+
+char ** cherche_etiquette(stockage s){
+    int pos=0;
+    char ** liste_etiquette=malloc(sizeof(char*)*s.nbr_exemples);
+    for(int i=1;i<s.nbr_exemples;){
+        if(inList(liste_etiquette,s.tableau[i][s.nbr_attributs],pos)==0){
+            liste_etiquette[pos]=s.tableau[i][s.nbr_attributs];
+            pos++;
+        }
+   }
+   return liste_etiquette;
+
+}
 stockage extraction_fichier(char * fichier){
     stockage s;
     int nbr_lignes=0,nbr_mots=0,i=0,j=0,pos=0;
@@ -32,6 +54,8 @@ stockage extraction_fichier(char * fichier){
         c=fgetc(fd);
     }
     rewind(fd);
+    s.nbr_attributs=nbr_mots;
+    s.nbr_exemples=nbr_lignes-1;
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
     for(i=0;i<nbr_lignes;i++){
@@ -46,7 +70,7 @@ stockage extraction_fichier(char * fichier){
                 mot[pos]=c;
                 c=fgetc(fd);
                 pos++;
-                printf("mot :%s ",mot);
+                printf(" c:%c ",c);
             }
             mot[pos]='\n';
             tableau[i][j]=strdup(mot);
@@ -55,6 +79,8 @@ stockage extraction_fichier(char * fichier){
         i++;
     }
     s.tableau=tableau;
+    s.liste_etiquette=cherche_etiquette(s);
+    s.liste_attributs_dispo=tableau[0];
     fclose(fd);
     s.nbr_exemples=nbr_lignes;
     s.nbr_attributs=nbr_mots;
@@ -79,8 +105,17 @@ void free_stockage(stockage *s) {
 }
 
 
+
+void afficher(stockage s){
+    for(int i=0;i<s.nbr_attributs;i++){
+        for(int j=0;j<s.nbr_exemples;j++){
+            printf("%s ",s.tableau[i][j]);
+        }
+        printf("\n");
+    }
+}
 int main(){
     stockage e=extraction_fichier("test.txt");
-    printf("%s",e.tableau[0][1]);
+    //afficher(e);
     free_stockage(&e);
 }
