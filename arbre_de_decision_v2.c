@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 typedef struct stockage{
     char *** tableau;
     char ** liste_attributs_dispo;
@@ -11,7 +12,7 @@ typedef struct stockage{
 }stockage;
 
 int inList(char ** l, char * mot,int taille){
-    for(int i=0;i<taille;i++){
+    for(int i=0;i<=taille;i++){
         if(mot==l[i]){
             return 1;
         }
@@ -19,7 +20,6 @@ int inList(char ** l, char * mot,int taille){
     return 0;
 
 }
-
 
 char ** cherche_etiquette(stockage s){
     int pos=0;
@@ -31,19 +31,19 @@ char ** cherche_etiquette(stockage s){
         }
    }
    return liste_etiquette;
-
 }
+
+
 stockage extraction_fichier(char * fichier){
     stockage s;
     int nbr_lignes=0,nbr_mots=0,i=0,j=0,pos=0;
     char c;
-    char* mot;
     char *** tableau;
+
     FILE * fd= fopen(fichier,"r");
     //on calcule le nombre de ligne et le nombre de mot de la premiere ligne pour malloc notre tableau
     c=fgetc(fd);
     while(c != EOF){
-        
         if(nbr_lignes==0 && c==' '){
             nbr_mots++;
         }
@@ -53,27 +53,27 @@ stockage extraction_fichier(char * fichier){
         c=fgetc(fd);
     }
     rewind(fd);
-    s.nbr_attributs=nbr_mots;
+    s.nbr_attributs=nbr_mots+1;
     s.nbr_exemples=nbr_lignes-1;
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
-    for(i=0;i<nbr_lignes;i++){
-        tableau[i]=malloc(sizeof(char*)*nbr_mots+1); //On rajoute 1 pour les etiquettes
-    }  
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
-        for(j=0;j<nbr_mots;j++){
-            mot=malloc(sizeof(char)*20);
-            c=fgetc(fd);
+        tableau[i]=malloc(sizeof(char*)*nbr_mots+2); //On rajoute 1 pour les etiquettes
+        for(j=0;j<=nbr_mots+1;j++){
+            tableau[i][j]=malloc(sizeof(char)*20);
+            //printf(" c1:%c ",c);
             pos=0;
-            while(c!=' ' && c!='\n'){
-                mot[pos]=c;
-                c=fgetc(fd);
+            while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<=20){
+                tableau[i][j][pos]=c;
                 pos++;
-                printf(" c:%c ",c);
+                //printf(" c2:%c ",c);
             }
-            tableau[i][j]=strdup(mot);
+            //printf("i:%d j:%d,nbr_mots:%d\n",i,j,nbr_mots);
+            tableau[i][j][pos]='\0';
+            if(c=='\n'){
+                j=nbr_mots+2;
+            }
         }
-        i++;
     }
     s.tableau=tableau;
     s.liste_etiquette=cherche_etiquette(s);
@@ -84,15 +84,24 @@ stockage extraction_fichier(char * fichier){
 }
 
 
-void afficher(stockage s){
-    for(int i=0;i<s.nbr_attributs;i++){
-        for(int j=0;j<s.nbr_exemples;j++){
-            printf("%s ",s.tableau[i][j]);
-        }
+void afficher_tableau(stockage s){
+    for(int i=0;i<=s.nbr_exemples;i++){
+        for(int j=0;j<=s.nbr_attributs-1;j++){
+            printf(" %s",s.tableau[i][j]);
+            }
         printf("\n");
+    }
+    printf("nbr attributs : %d\n",s.nbr_attributs);
+    printf("nbr exemples : %d\n",s.nbr_exemples);
+
+}
+void afficher_etiquette(stockage s){
+    for(int i=0;i<s.nbr_exemples;i++){
+        printf("%s ",s.liste_etiquette[i]);
     }
 }
 int main(){
     stockage e=extraction_fichier("test.txt");
-    //afficher(e);
+    afficher_tableau(e);
+    afficher_etiquette(e);
 }
