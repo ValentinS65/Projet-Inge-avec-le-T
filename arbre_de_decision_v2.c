@@ -12,8 +12,8 @@ typedef struct stockage{
 }stockage;
 
 int inList(char ** l, char * mot,int taille){
-    for(int i=0;i<=taille;i++){
-        if(mot==l[i]){
+    for(int i=0;i<taille;i++){
+        if(strcmp(mot,l[i])==0){
             return 1;
         }
     }
@@ -29,8 +29,8 @@ char ** cherche_etiquette(stockage s){
             liste_etiquette[pos]=s.tableau[i][s.nbr_attributs];
             pos++;
         }
-   }
-   return liste_etiquette;
+    }
+    return liste_etiquette;
 }
 
 
@@ -79,6 +79,7 @@ stockage extraction_fichier(char * fichier){
     s.liste_etiquette=cherche_etiquette(s);
     s.liste_attributs_dispo=tableau[0];
     fclose(fd);
+
     return s;
 
 }
@@ -100,8 +101,33 @@ void afficher_etiquette(stockage s){
         printf("%s ",s.liste_etiquette[i]);
     }
 }
+
+void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
+    for (int i = 0; i < nbr_lignes; i++) {
+        for (int j = 0; j < nbr_mots; j++) {
+            free(tableau[i][j]);
+        }
+        free(tableau[i]);
+    }
+    free(tableau);
+}
+
+void free_stockage(stockage *s) {
+    free_tableau(s->tableau, s->nbr_exemples, s->nbr_attributs);
+    for (int i=0;i<s->nbr_attributs;i++){
+        free(s->liste_attributs_dispo[i]);
+    }
+    free(s->liste_attributs_dispo);
+    
+    for (int i = 0; i < s->nbr_exemples; i++) {
+        free(s->liste_etiquette[i]);
+    }
+    free(s->liste_etiquette);
+}
+
 int main(){
     stockage e=extraction_fichier("test.txt");
     afficher_tableau(e);
     afficher_etiquette(e);
+    //free_stockage(&e);
 }
