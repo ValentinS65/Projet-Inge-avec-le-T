@@ -46,19 +46,41 @@ stockage extraction_fichier(char * fichier){
                 mot[pos]=c;
                 c=fgetc(fd);
                 pos++;
-                printf("mot :%s",mot);
+                printf("mot :%s ",mot);
             }
+            mot[pos]='\n';
             tableau[i][j]=strdup(mot);
+            free(mot);
         }
         i++;
     }
     s.tableau=tableau;
     fclose(fd);
+    s.nbr_exemples=nbr_lignes;
+    s.nbr_attributs=nbr_mots;
     return s;
 
 }
 
+void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
+    for (int i = 0; i < nbr_lignes; i++) {
+        for (int j = 0; j < nbr_mots; j++) {
+            free(tableau[i][j]);
+        }
+        free(tableau[i]);
+    }
+    free(tableau);
+}
+
+void free_stockage(stockage *s) {
+    free_tableau(s->tableau, s->nbr_exemples, s->nbr_attributs);
+    free(s->liste_attributs_dispo);
+    free(s->liste_etiquette);
+}
+
+
 int main(){
     stockage e=extraction_fichier("test.txt");
     printf("%s",e.tableau[0][1]);
+    free_stockage(&e);
 }
