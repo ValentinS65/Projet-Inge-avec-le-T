@@ -12,8 +12,8 @@ typedef struct stockage{
 }stockage;
 
 int inList(char ** l, char * mot,int taille){
-    for(int i=0;i<=taille;i++){
-        if(mot==l[i]){
+    for(int i=0;i<taille;i++){
+        if(strcmp(mot,l[i])==0){
             return 1;
         }
     }
@@ -29,8 +29,8 @@ char ** cherche_etiquette(stockage s){
             liste_etiquette[pos]=s.tableau[i][s.nbr_attributs];
             pos++;
         }
-   }
-   return liste_etiquette;
+    }
+    return liste_etiquette;
 }
 
 
@@ -53,31 +53,38 @@ stockage extraction_fichier(char * fichier){
         c=fgetc(fd);
     }
     rewind(fd);
+
     s.nbr_attributs=nbr_mots+1;
     s.nbr_exemples=nbr_lignes-1;
+    
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
         tableau[i]=malloc(sizeof(char*)*nbr_mots+2); //On rajoute 1 pour les etiquettes
+        
         for(j=0;j<=nbr_mots+1;j++){
-            tableau[i][j]=malloc(sizeof(char)*20);
+            tableau[i][j]=(char * ) malloc(sizeof(char)*20);
             //printf(" c1:%c ",c);
             pos=0;
+            
             while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<=20){
                 tableau[i][j][pos]=c;
                 pos++;
                 //printf(" c2:%c ",c);
             }
+        
             //printf("i:%d j:%d,nbr_mots:%d\n",i,j,nbr_mots);
             tableau[i][j][pos]='\0';
             if(c=='\n'){
                 j=nbr_mots+2;
             }
         }
+        
     }
     s.tableau=tableau;
     s.liste_etiquette=cherche_etiquette(s);
     s.liste_attributs_dispo=tableau[0];
+
     fclose(fd);
     return s;
 
@@ -100,8 +107,35 @@ void afficher_etiquette(stockage s){
         printf("%s ",s.liste_etiquette[i]);
     }
 }
+
+void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
+    for (int i = 0; i < nbr_lignes; i++) {
+        for (int j = 0; j < nbr_mots; j++) {
+            free(tableau[i][j]);
+        }
+        free(tableau[i]);
+    }
+    free(tableau);
+}
+
+void free_stockage(stockage *s) {
+    free_tableau(s->tableau, s->nbr_exemples, s->nbr_attributs);
+
+    for (int i=0;i<s->nbr_attributs;i++){
+        free(s->liste_attributs_dispo[i]);
+    }
+    free(s->liste_attributs_dispo);
+    /*
+    for (int i = 0; i < s->nbr_exemples; i++) {
+        free(s->liste_etiquette[i]);
+    }
+    free(s->liste_etiquette);
+    */
+}
+
 int main(){
     stockage e=extraction_fichier("test.txt");
-    afficher_tableau(e);
-    afficher_etiquette(e);
+   // afficher_tableau(e);
+    //afficher_etiquette(e);
+    free_stockage(&e);
 }
