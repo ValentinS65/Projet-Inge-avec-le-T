@@ -58,11 +58,22 @@ stockage extraction_fichier(char * fichier){
     s.nbr_exemples=nbr_lignes-1;
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
+    if (tableau == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(1);
+    }
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
         tableau[i]=malloc(sizeof(char*)*nbr_mots); //On rajoute 1 pour les etiquettes
+        if (tableau[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
         for(j=0;j<=nbr_mots+1;j++){
             tableau[i][j]=malloc(sizeof(char)*20);
-            //printf(" c1:%c ",c);
+            if (tableau[i][j] == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                exit(1);
+            }
             pos=0;
             while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<=20){
                 tableau[i][j][pos]=c;
