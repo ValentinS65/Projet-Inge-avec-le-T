@@ -1,2 +1,2 @@
-Bonjour ceci est un test
-1 2 3 4 5 etiquette
+Bonjour ceci est un test etiquette
+1 2 3 4 5 6

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 
+
 typedef struct stockage{
     char *** tableau;
     char ** liste_attributs_dispo;
@@ -11,6 +12,7 @@ typedef struct stockage{
     int nbr_exemples;
 }stockage;
 
+
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
         if(strcmp(mot,l[i])==0){
@@ -18,7 +20,6 @@ int inList(char ** l, char * mot,int taille){
         }
     }
     return 0;
-
 }
 
 char ** cherche_etiquette(stockage s){
@@ -58,7 +59,7 @@ stockage extraction_fichier(char * fichier){
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
-        tableau[i]=malloc(sizeof(char*)*nbr_mots+2); //On rajoute 1 pour les etiquettes
+        tableau[i]=malloc(sizeof(char*)*nbr_mots); //On rajoute 1 pour les etiquettes
         for(j=0;j<=nbr_mots+1;j++){
             tableau[i][j]=malloc(sizeof(char)*20);
             //printf(" c1:%c ",c);
@@ -71,7 +72,7 @@ stockage extraction_fichier(char * fichier){
             //printf("i:%d j:%d,nbr_mots:%d\n",i,j,nbr_mots);
             tableau[i][j][pos]='\0';
             if(c=='\n'){
-                j=nbr_mots+2;
+                break;
             }
         }
     }
@@ -88,14 +89,14 @@ stockage extraction_fichier(char * fichier){
 void afficher_tableau(stockage s){
     for(int i=0;i<=s.nbr_exemples;i++){
         for(int j=0;j<=s.nbr_attributs-1;j++){
-            printf(" %s",s.tableau[i][j]);
+            printf("%s",s.tableau[i][j]);
             }
         printf("\n");
     }
     printf("nbr attributs : %d\n",s.nbr_attributs);
     printf("nbr exemples : %d\n",s.nbr_exemples);
-
 }
+
 void afficher_etiquette(stockage s){
     for(int i=0;i<s.nbr_exemples;i++){
         printf("%s ",s.liste_etiquette[i]);
