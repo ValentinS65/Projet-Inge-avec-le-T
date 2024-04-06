@@ -24,7 +24,7 @@ int inList(char ** l, char * mot,int taille){
 char ** cherche_etiquette(stockage s){
     int pos=0;
     char ** liste_etiquette=malloc(sizeof(char*)*s.nbr_exemples);
-    for(int i=1;i<s.nbr_exemples;){
+    for(int i=1;i<s.nbr_exemples+1;){
         if(inList(liste_etiquette,s.tableau[i][s.nbr_attributs],pos)==0){
             liste_etiquette[pos]=s.tableau[i][s.nbr_attributs];
             pos++;
@@ -58,7 +58,7 @@ stockage extraction_fichier(char * fichier){
     //On revient au debut du fichier
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
-        tableau[i]=malloc(sizeof(char*)*nbr_mots+2); //On rajoute 1 pour les etiquettes
+        tableau[i]=malloc(sizeof(char*)*nbr_mots+1); //On rajoute 1 pour les etiquettes
         for(j=0;j<=nbr_mots+1;j++){
             tableau[i][j]=malloc(sizeof(char)*20);
             //printf(" c1:%c ",c);
