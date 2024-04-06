@@ -3,13 +3,16 @@
 #include <string.h>
 #include <math.h>
 
+
 typedef struct stockage{
     char *** tableau;
     char ** liste_attributs_dispo;
     char ** liste_etiquette;
     int nbr_attributs;
     int nbr_exemples;
+    int nbr_etiquette;
 }stockage;
+
 
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
@@ -18,15 +21,18 @@ int inList(char ** l, char * mot,int taille){
         }
     }
     return 0;
-
 }
 
-char ** cherche_etiquette(stockage s){
+char ** cherche_etiquette(stockage *s){
     int pos=0;
-    char ** liste_etiquette=malloc(sizeof(char*)*s.nbr_exemples);
-    for(int i=1;i<s.nbr_exemples+1;){
-        if(inList(liste_etiquette,s.tableau[i][s.nbr_attributs],pos)==0){
-            liste_etiquette[pos]=s.tableau[i][s.nbr_attributs];
+    char ** liste_etiquette=malloc(sizeof(char*)*s->nbr_exemples);
+    for(int i=1;i<s->nbr_exemples+1;i++){
+        if(inList(liste_etiquette,s->tableau[i][s->nbr_attributs-1],pos)==0){ //On vérifie qu'on ajoute uniquement les etiquettes qui ne sont pas présent dans notre liste grâce à la fonction inList
+            liste_etiquette[pos]=s->tableau[i][s->nbr_attributs-1];
+            //printf("etiquette: %s\n",s.tableau[i][s.nbr_attributs-1]);
+            s->nbr_etiquette++;
+        printf("nbr_etiquette i:%d\n",s->nbr_etiquette);
+
             pos++;
         }
     }
@@ -39,7 +45,6 @@ stockage extraction_fichier(char * fichier){
     int nbr_lignes=0,nbr_mots=0,i=0,j=0,pos=0;
     char c;
     char *** tableau;
-
     FILE * fd= fopen(fichier,"r");
     //on calcule le nombre de ligne et le nombre de mot de la premiere ligne pour malloc notre tableau
     c=fgetc(fd);
@@ -55,50 +60,85 @@ stockage extraction_fichier(char * fichier){
     rewind(fd);
     s.nbr_attributs=nbr_mots+1;
     s.nbr_exemples=nbr_lignes-1;
+    s.nbr_etiquette=0;
     //On revient au debut du fichier
+    printf("nbr attributs : %d\n",s.nbr_attributs);
+    printf("nbr exemples : %d\n",s.nbr_exemples);
+    printf("nbr mots : %d\n",nbr_mots);
+    printf("nbr lignes : %d\n",nbr_lignes);
     tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
+    if (tableau == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(1);
+    }
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
-        tableau[i]=malloc(sizeof(char*)*nbr_mots+1); //On rajoute 1 pour les etiquettes
-        for(j=0;j<=nbr_mots+1;j++){
+        tableau[i]=malloc(sizeof(char*)*s.nbr_attributs); 
+        if (tableau[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
+        for(j=0;j<s.nbr_attributs+1;j++){ 
             tableau[i][j]=malloc(sizeof(char)*20);
-            //printf(" c1:%c ",c);
-            pos=0;
-            while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<=20){
-                tableau[i][j][pos]=c;
-                pos++;
-                //printf(" c2:%c ",c);
+            if (tableau[i][j] == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                exit(1);
             }
-            //printf("i:%d j:%d,nbr_mots:%d\n",i,j,nbr_mots);
+            pos=0;
+            while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<19 && c!='\r'){
+                if(i==1 && j==5){
+                //printf("pos:%d mot:%c\n",pos,c);
+                }
+                tableau[i][j][pos]=c;
+                //printf("pos:%d mot:%s\n",pos,tableau[i][j]);
+                pos++;
+            }
+            //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
+
             tableau[i][j][pos]='\0';
             if(c=='\n'){
-                j=nbr_mots+2;
-            }
+                break;
+            }            
         }
     }
-    s.tableau=tableau;
-    s.liste_etiquette=cherche_etiquette(s);
-    s.liste_attributs_dispo=tableau[0];
     fclose(fd);
+    s.tableau=tableau;
+    s.liste_etiquette=cherche_etiquette(&s);
+    s.liste_attributs_dispo=malloc(sizeof(char*)*s.nbr_attributs-2); //-2 car on enleve l'etiquette
+     if (s.liste_attributs_dispo == NULL) {
+        fprintf(stderr, "Memory allocation failed for liste_attributs_dispo.\n");
+        exit(1);
+    }
+    for(i=0;i<s.nbr_attributs-1;i++){
+        s.liste_attributs_dispo[i]=malloc(sizeof(char)*20);
+        if (s.liste_attributs_dispo[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed for attribute name.\n");
+            exit(1);
+        }
+        s.liste_attributs_dispo[i] = strdup(s.tableau[0][i]);
+        printf("%s\n",s.liste_attributs_dispo[i]);
+
+    }
 
     return s;
-
 }
 
 
-void afficher_tableau(stockage s){
-    for(int i=0;i<=s.nbr_exemples;i++){
-        for(int j=0;j<=s.nbr_attributs-1;j++){
-            printf(" %s",s.tableau[i][j]);
+void afficher_tableau(stockage s){ 
+    for(int i=0;i<s.nbr_exemples+1;i++){
+        for(int j=0;j<s.nbr_attributs;j++){
+                printf("%s ",s.tableau[i][j]);
             }
         printf("\n");
     }
     printf("nbr attributs : %d\n",s.nbr_attributs);
-    printf("nbr exemples : %d\n",s.nbr_exemples);
-
+    printf("nbr exemples : %d\n",s.nbr_exemples); 
 }
+
 void afficher_etiquette(stockage s){
-    for(int i=0;i<s.nbr_exemples;i++){
-        printf("%s ",s.liste_etiquette[i]);
+    printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
+
+    for(int i=0;i<s.nbr_etiquette;i++){
+        printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
     }
 }
 
@@ -112,22 +152,23 @@ void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
     free(tableau);
 }
 
-void free_stockage(stockage *s) {
-    free_tableau(s->tableau, s->nbr_exemples, s->nbr_attributs);
-    for (int i=0;i<s->nbr_attributs;i++){
-        free(s->liste_attributs_dispo[i]);
+void free_stockage(stockage s) {
+
+    free_tableau(s.tableau, s.nbr_exemples+1, s.nbr_attributs);
+    for (int i=0;i<s.nbr_attributs-1;i++){
+        printf("%s\n",s.liste_attributs_dispo[i]);
+        free(s.liste_attributs_dispo[i]);
     }
-    free(s->liste_attributs_dispo);
-    
-    for (int i = 0; i < s->nbr_exemples; i++) {
-        free(s->liste_etiquette[i]);
+    free(s.liste_attributs_dispo);
+    for (int i = 0; i < s.nbr_etiquette+1; i++) {
+        free(s.liste_etiquette[i]);
     }
-    free(s->liste_etiquette);
+    free(s.liste_etiquette);
 }
 
 int main(){
     stockage e=extraction_fichier("test.txt");
     afficher_tableau(e);
     afficher_etiquette(e);
-    //free_stockage(&e);
+    free_stockage(e);
 }
