@@ -179,37 +179,41 @@ void free_stockage(stockage s) {
 // Calcul de gain d'entropie
 
 //Recupération des valeurs possibles pour chaque attribut.
-attribut Valeur_Attribut(stockage s){
-    char *** tableau=malloc(sizeof(char**)*s.nbr_exemples+1);
-    int * count=malloc(sizeof(int)*s.nbr_attributs);
-    int **nbr_apparition=malloc(sizeof(int*)*s.nbr_attributs);
-   //On initialise notre tableau de chaine de caractère
-    if (tableau == NULL ||count==NULL || nbr_apparition==NULL) {
+attribut Valeur_Attribut(stockage s) {
+    attribut attrib;
+
+    char ***tableau = malloc(sizeof(char **) * s.nbr_attributs);
+    int *count = malloc(sizeof(int) * s.nbr_attributs);
+    int **nbr_apparition = malloc(sizeof(int *) * s.nbr_attributs);
+    // Vérification des allocations
+    if (tableau == NULL || count == NULL || nbr_apparition == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    for(int i=0;i<s.nbr_exemples;i++){ //On recupere les donnees du fichier
-        tableau[i]=malloc(sizeof(char*)*s.nbr_attributs); 
-        
-        if (tableau[i] == NULL) {
+
+    // Initialisation des tableaux de pointeurs
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        tableau[i] = malloc(sizeof(char *) * s.nbr_exemples);
+        nbr_apparition[i] = calloc(s.nbr_exemples, sizeof(int));
+
+        if (tableau[i] == NULL || nbr_apparition[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
             exit(1);
         }
-        for(int j=0;j<s.nbr_attributs+1;j++){ 
-            tableau[i][j]=NULL;
-            nbr_apparition[j]=calloc(s.nbr_exemples,sizeof(int));
+        for (int j = 0; j < s.nbr_exemples; j++) {
+            tableau[i][j] = NULL;
         }
     }
+
     // Parcourir chaque attribut
-    for (int i = 0; i < s.nbr_attributs - 1; i++) {
+    for (int i = 0; i < s.nbr_attributs; i++) {
         int index = 0; // Index pour stocker les valeurs uniques
 
         // Parcourir chaque exemple pour récupérer les valeurs uniques
-        for (int j = 1; j < s.nbr_exemples + 1; j++) {
+        for (int j = 0; j < s.nbr_exemples; j++) {
             char *valeur = s.tableau[j][i]; // Valeur de l'attribut dans cet exemple
-
+            int exist = 0; // Pour vérifier l'existence de la valeur dans le tableau
             // Vérifier si cette valeur existe déjà dans les valeurs attributs
-            int exist = 0;
             for (int k = 0; k < index; k++) {
                 if (strcmp(valeur, tableau[i][k]) == 0) {
                     exist = 1; // La valeur existe déjà
@@ -221,18 +225,20 @@ attribut Valeur_Attribut(stockage s){
             // Si la valeur n'existe pas déjà, l'ajouter
             if (!exist) {
                 tableau[i][index] = strdup(valeur);
-                nbr_apparition[i][index]=1;
+                nbr_apparition[i][index] = 1;
                 index++;
             }
         }
-        count[i]=index-1;
+        count[i] = index; // Nombre de valeurs uniques pour cet attribut
     }
-    attribut attrib;
-    attrib.nbr_valeur_attribut=count;
-    attrib.tableau=tableau;
-    attrib.nbr_apparition=nbr_apparition;
+
+    // Assigner les valeurs à attrib et retourner
+    attrib.nbr_valeur_attribut = count;
+    attrib.tableau = tableau;
+    attrib.nbr_apparition = nbr_apparition;
     return attrib;
 }
+
 
 //Libere la mémoire de attribut
 void free_attribut(attribut a, stockage s) {
@@ -289,9 +295,11 @@ float gain(attribut attr, stockage s, int set) {
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    //attribut a=Valeur_Attribut(e);
-    //afficher_tableau(e);
-    //afficher_etiquette(e);
+    attribut a=Valeur_Attribut(e);
+    afficher_tableau(e);
+    afficher_etiquette(e);
+    float test=gain(a,e,1);
+    printf("%f",test);
     //free_attribut(a,e);
     //free_stockage(e);
     
