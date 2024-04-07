@@ -93,7 +93,6 @@ stockage extraction_fichier(char * fichier){
                 pos++;
             }
             //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
-
             tableau[i][j][pos]='\0';
             if(c=='\n'){
                 break;
