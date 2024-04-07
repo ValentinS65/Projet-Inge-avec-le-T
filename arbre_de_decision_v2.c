@@ -234,6 +234,54 @@ attribut Valeur_Attribut(stockage s){
     return attrib;
 }
 
+//Libere la mémoire de attribut
+void free_attribut(attribut a, stockage s) {
+    // Libération de la mémoire allouée pour le tableau de valeurs
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        for (int j = 0; j < s.nbr_exemples; j++) {
+            free(a.tableau[i][j]);
+        }
+        free(a.tableau[i]);
+    }
+    free(a.tableau);
+
+    // Libération de la mémoire allouée pour le tableau de nombre d'apparition
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        free(a.nbr_apparition[i]);
+    }
+    free(a.nbr_apparition);
+
+    // Libération de la mémoire allouée pour le tableau de nombre de valeurs attributaires
+    free(a.nbr_valeur_attribut);
+}
+
+//Calcul de l'entropie
+float entropie(int *nbr_apparition, int nbr_valeurs) {
+    float entropie = 0.0;
+    float total = 0.0;
+    for (int i = 0; i < nbr_valeurs; i++) {
+        total += nbr_apparition[i];
+    }
+    for (int i = 0; i < nbr_valeurs; i++) {
+        float prob = (float) nbr_apparition[i] / total;
+        if (prob != 0.0) {
+            entropie -= prob * log2(prob);
+        }
+    }
+    return entropie;
+}
+//Calcul du gain entropique
+float gain(attribut attr, stockage s, int set) {
+    float gain_entropique = 0.0;
+    float entropie_totale = entropie(attr.nbr_apparition[set], s.nbr_etiquette);
+    for (int i = 0; i < attr.nbr_valeur_attribut[set]; i++) {
+        float prob_valeur = (float) attr.nbr_apparition[set][i] / s.nbr_exemples;
+        float entropie_sous_ensemble = entropie(attr.nbr_apparition[i], attr.nbr_valeur_attribut[set]);
+        gain_entropique += prob_valeur * entropie_sous_ensemble;
+    }
+    gain_entropique = entropie_totale - gain_entropique;
+    return gain_entropique;
+}
 
 
 
@@ -241,8 +289,10 @@ attribut Valeur_Attribut(stockage s){
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    attribut a=Valeur_Attribut(e);
-    afficher_tableau(e);
-    afficher_etiquette(e);
-    free_stockage(e);
+    //attribut a=Valeur_Attribut(e);
+    //afficher_tableau(e);
+    //afficher_etiquette(e);
+    //free_attribut(a,e);
+    //free_stockage(e);
+    
 }
