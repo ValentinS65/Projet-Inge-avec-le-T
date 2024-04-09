@@ -35,7 +35,7 @@ char ** cherche_etiquette(stockage *s){
     char ** liste_etiquette=malloc(sizeof(char*)*s->nbr_exemples);
     for(int i=1;i<s->nbr_exemples+1;i++){
         if(inList(liste_etiquette,s->tableau[i][s->nbr_attributs-1],pos)==0){ //On vérifie qu'on ajoute uniquement les etiquettes qui ne sont pas présent dans notre liste grâce à la fonction inList
-            liste_etiquette[pos]=s->tableau[i][s->nbr_attributs-1];
+            liste_etiquette[pos]=strdup(s->tableau[i][s->nbr_attributs-1]);
             //printf("etiquette: %s\n",s.tableau[i][s.nbr_attributs-1]);
             s->nbr_etiquette++;
         printf("nbr_etiquette i:%d\n",s->nbr_etiquette);
@@ -74,28 +74,25 @@ stockage extraction_fichier(char * fichier){
     printf("nbr exemples : %d\n",s.nbr_exemples);
     printf("nbr mots : %d\n",nbr_mots);
     printf("nbr lignes : %d\n",nbr_lignes);
-    tableau=malloc(sizeof(char **)*nbr_lignes); //On initialise notre tableau de chaine de caractère
+    tableau=malloc(sizeof(char **)*(nbr_lignes+1)); //On initialise notre tableau de chaine de caractère
     if (tableau == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
     for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
-        tableau[i]=malloc(sizeof(char*)*s.nbr_attributs); 
+        tableau[i]=malloc(sizeof(char*)*(s.nbr_attributs+1));  //On ajoute 1 pour garder un espace pour le "signal" d'arret (c'est pour le pc)
         if (tableau[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
             exit(1);
         }
         for(j=0;j<s.nbr_attributs+1;j++){ 
-            tableau[i][j]=malloc(sizeof(char)*20);
-            if (tableau[i][j] == NULL) {
+            tableau[i][j]=malloc(sizeof(char)*30);
+            if(tableau[i][j] == NULL) {
                 fprintf(stderr, "Memory allocation failed.\n");
                 exit(1);
             }
             pos=0;
-            while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<19 && c!='\r'){
-                if(i==1 && j==5){
-                //printf("pos:%d mot:%c\n",pos,c);
-                }
+            while((c= fgetc(fd))!=' ' && c!='\n' && c!='\0' && c!=EOF && pos<29 && c!='\r'){
                 tableau[i][j][pos]=c;
                 //printf("pos:%d mot:%s\n",pos,tableau[i][j]);
                 pos++;
@@ -103,17 +100,17 @@ stockage extraction_fichier(char * fichier){
             //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
 
             tableau[i][j][pos]='\0';
+            
             if(c=='\n'){
                 break;
             }            
         }
         
     }
-    fclose(fd);
     s.tableau=tableau;
     s.liste_etiquette=cherche_etiquette(&s);
-    s.liste_attributs_dispo=malloc(sizeof(char*)*s.nbr_attributs-2); //-2 car on enleve l'etiquette
-     if (s.liste_attributs_dispo == NULL) {
+    s.liste_attributs_dispo=malloc(sizeof(char*)*(s.nbr_attributs-1)); //-2 car on enleve l'etiquette
+    if (s.liste_attributs_dispo == NULL) {
         fprintf(stderr, "Memory allocation failed for liste_attributs_dispo.\n");
         exit(1);
     }
@@ -127,7 +124,6 @@ stockage extraction_fichier(char * fichier){
         printf("%s\n",s.liste_attributs_dispo[i]);
 
     }
-
     fclose(fd);
     return s;
 }
@@ -155,6 +151,7 @@ void afficher_etiquette(stockage s){
 void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
     for (int i = 0; i < nbr_lignes; i++) {
         for (int j = 0; j < nbr_mots; j++) {
+            printf("tab %d,%d: %s\n",i,j,tableau[i][j]);
             free(tableau[i][j]);
         }
         free(tableau[i]);
@@ -170,12 +167,13 @@ void free_stockage(stockage s) {
         free(s.liste_attributs_dispo[i]);
     }
     free(s.liste_attributs_dispo);
-    for (int i = 0; i < s.nbr_etiquette+1; i++) {
+    for (int i = 0; i < s.nbr_etiquette; i++) {
+        printf("etiquette : %s\n",s.liste_etiquette[i]);
         free(s.liste_etiquette[i]);
     }
     free(s.liste_etiquette);
 }
-
+/*
 // Calcul de gain d'entropie
 
 //Recupération des valeurs possibles pour chaque attribut.
@@ -271,7 +269,7 @@ float entropie(int *nbr_apparition, int nbr_valeurs) {
     for (int i = 0; i < nbr_valeurs; i++) {
         float prob = (float) nbr_apparition[i] / total;
         if (prob != 0.0) {
-            entropie -= prob * log2(prob);
+            entropie -= prob * (int)log2f(prob);
         }
     }
     return entropie;
@@ -288,7 +286,7 @@ float gain(attribut attr, stockage s, int set) {
     gain_entropique = entropie_totale - gain_entropique;
     return gain_entropique;
 }
-
+*/
 
 
 
@@ -296,11 +294,11 @@ float gain(attribut attr, stockage s, int set) {
 int main(){
     stockage e=extraction_fichier("test.txt");
     //attribut a=Valeur_Attribut(e);
-    //afficher_tableau(e);
-   // afficher_etiquette(e);
+    afficher_tableau(e);
+    afficher_etiquette(e);
    // float test=gain(a,e,1);
     //printf("mon test : %f",test);
     //free_attribut(a,e);
-    //free_stockage(e);
+    free_stockage(e);
     
 }
