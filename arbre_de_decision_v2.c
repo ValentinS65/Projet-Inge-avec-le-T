@@ -295,12 +295,12 @@ float gain(attribut attr, stockage s, int set) {
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    //attribut a=Valeur_Attribut(e);
-    //afficher_tableau(e);
-   // afficher_etiquette(e);
-   // float test=gain(a,e,1);
-    //printf("mon test : %f",test);
-    //free_attribut(a,e);
-    //free_stockage(e);
+    attribut a=Valeur_Attribut(e);
+    afficher_tableau(e);
+   afficher_etiquette(e);
+   float test=gain(a,e,1);
+    printf("mon test : %f",test);
+    free_attribut(a,e);
+    free_stockage(e);
     
 }
