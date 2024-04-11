@@ -67,7 +67,7 @@ stockage extraction_fichier(char * fichier){
     rewind(fd);
 
     s.nbr_attributs=nbr_mots+1;
-    s.nbr_exemples=nbr_lignes-1;
+    s.nbr_exemples=nbr_lignes;
     s.nbr_etiquette=0;
     //On revient au debut du fichier
     printf("nbr attributs : %d\n",s.nbr_attributs);
@@ -327,15 +327,15 @@ float gain(attribut attr, stockage s, int set) {
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    attribut a=Valeur_Attribut(e);
+    //attribut a=Valeur_Attribut(e);
     //afficher_tableau(e);
    //afficher_etiquette(e);
-   affiche_attribut(a,e);
+   //affiche_attribut(a,e);
    //float test=gain(a,e,2);
     //printf("mon test : %f\n",test);
     //float test2=entropie(a.nbr_apparition[0],a.nbr_valeur_attribut[0]);
     //printf("mont test2 : %f\n",test2);
-    free_attribut(a,e);
+    //free_attribut(a,e);
     free_stockage(e);
     
 }
