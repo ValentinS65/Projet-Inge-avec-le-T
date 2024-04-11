@@ -73,8 +73,8 @@ stockage extraction_fichier(char * fichier){
     printf("nbr attributs : %d\n",s.nbr_attributs);
     printf("nbr exemples : %d\n",s.nbr_exemples);
     printf("nbr mots : %d\n",nbr_mots);
-    printf("nbr lignes : %d\n",nbr_lignes);
-    tableau=malloc(sizeof(char **)*(nbr_lignes+1)); //On initialise notre tableau de chaine de caractère
+    printf("nbr lignes : %d\n",nbr_lignes+1);
+    tableau=malloc(sizeof(char **)*(s.nbr_exemples+1)); //On initialise notre tableau de chaine de caractère
     if (tableau == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
