@@ -67,7 +67,7 @@ stockage extraction_fichier(char * fichier){
     rewind(fd);
 
     s.nbr_attributs=nbr_mots+1;
-    s.nbr_exemples=nbr_lignes-1;
+    s.nbr_exemples=nbr_lignes;
     s.nbr_etiquette=0;
     //On revient au debut du fichier
     printf("nbr attributs : %d\n",s.nbr_attributs);
@@ -97,7 +97,7 @@ stockage extraction_fichier(char * fichier){
                 //printf("pos:%d mot:%s\n",pos,tableau[i][j]);
                 pos++;
             }
-            printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
+            //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
 
             tableau[i][j][pos]='\0';
             
@@ -163,12 +163,12 @@ void free_stockage(stockage s) {
 
     free_tableau(s.tableau, s.nbr_exemples+1, s.nbr_attributs);
     for (int i=0;i<s.nbr_attributs-1;i++){
-        printf("%s\n",s.liste_attributs_dispo[i]);
+        //printf("%s\n",s.liste_attributs_dispo[i]);
         free(s.liste_attributs_dispo[i]);
     }
     free(s.liste_attributs_dispo);
     for (int i = 0; i < s.nbr_etiquette; i++) {
-        printf("etiquette : %s\n",s.liste_etiquette[i]);
+        //printf("etiquette : %s\n",s.liste_etiquette[i]);
         free(s.liste_etiquette[i]);
     }
     free(s.liste_etiquette);
@@ -329,8 +329,8 @@ int main(){
     stockage e=extraction_fichier("test.txt");
     attribut a=Valeur_Attribut(e);
     afficher_tableau(e);
-   afficher_etiquette(e);
-   affiche_attribut(a,e);
+    afficher_etiquette(e);
+    affiche_attribut(a,e);
    //float test=gain(a,e,2);
     //printf("mon test : %f\n",test);
     //float test2=entropie(a.nbr_apparition[0],a.nbr_valeur_attribut[0]);
