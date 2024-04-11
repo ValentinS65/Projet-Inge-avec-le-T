@@ -16,7 +16,7 @@ typedef struct stockage{
 typedef struct attribut{
     char *** tableau;
     int * nbr_valeur_attribut;
-    int ** nbr_apparition;
+    int *** nbr_apparition;
 
 }attribut;
 
@@ -179,10 +179,10 @@ void free_stockage(stockage s) {
 //Recupération des valeurs possibles pour chaque attribut.
 attribut Valeur_Attribut(stockage s) {
     attribut attrib;
-
+    printf("Nombre exemple : %d ",s.nbr_exemples);
     char ***tableau = malloc(sizeof(char **) * s.nbr_attributs);
     int *count = malloc(sizeof(int) * s.nbr_attributs);
-    int **nbr_apparition = malloc(sizeof(int *) * s.nbr_attributs);
+    int ***nbr_apparition = malloc(sizeof(int **) * s.nbr_attributs);
     // Vérification des allocations
     if (tableau == NULL || count == NULL || nbr_apparition == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
@@ -191,8 +191,8 @@ attribut Valeur_Attribut(stockage s) {
 
     // Initialisation des tableaux de pointeurs
     for (int i = 0; i < s.nbr_attributs; i++) {
-        tableau[i] = malloc(sizeof(char *) * s.nbr_exemples);
-        nbr_apparition[i] = calloc(s.nbr_exemples, sizeof(int));
+        tableau[i] = malloc(sizeof(char *) *( s.nbr_exemples));
+        nbr_apparition[i] = calloc(s.nbr_exemples, sizeof(int*));
 
         if (tableau[i] == NULL || nbr_apparition[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
@@ -200,36 +200,49 @@ attribut Valeur_Attribut(stockage s) {
         }
         for (int j = 0; j < s.nbr_exemples; j++) {
             tableau[i][j] = NULL;
+            nbr_apparition[i][j] = malloc((s.nbr_etiquette + 1) * sizeof(int));
+            for (int etiquette = 0; etiquette < s.nbr_etiquette + 1; etiquette++) {
+                nbr_apparition[i][j][etiquette] = 0;
+            }
         }
     }
-
+    
     // Parcourir chaque attribut
-    for (int i = 0; i < s.nbr_attributs; i++) {
+    for (int i = 0; i < s.nbr_attributs - 1; i++) {
         int index = 0; // Index pour stocker les valeurs uniques
 
         // Parcourir chaque exemple pour récupérer les valeurs uniques
-        for (int j = 1; j < s.nbr_exemples+1; j++) {
+        for (int j = 1; j < s.nbr_exemples +1 ; j++) {
             char *valeur = s.tableau[j][i]; // Valeur de l'attribut dans cet exemple
-            int exist = 0; // Pour vérifier l'existence de la valeur dans le tableau
+            int exist = -1; // Variable pour stocker l'indice de la valeur si elle existe déjà, -1 sinon
+
             // Vérifier si cette valeur existe déjà dans les valeurs attributs
             for (int k = 0; k < index; k++) {
                 if (strcmp(valeur, tableau[i][k]) == 0) {
-                    exist = 1; // La valeur existe déjà
-                    nbr_apparition[i][k]++;
+                    exist = k; // La valeur existe déjà, enregistrer l'indice
                     break;
                 }
             }
 
             // Si la valeur n'existe pas déjà, l'ajouter
-            if (!exist) {
+            if (exist == -1) {
                 tableau[i][index] = strdup(valeur);
-                nbr_apparition[i][index] = 1;
+                exist = index; // Mettre à jour l'indice exist
                 index++;
             }
+
+            // Incrémenter le nombre d'apparitions de cette valeur pour l'étiquette correspondante
+            for (int etiquette = 0; etiquette < s.nbr_etiquette; etiquette++) {
+                if (strcmp(s.liste_etiquette[etiquette], s.tableau[j][s.nbr_attributs - 1]) == 0) {
+                    nbr_apparition[i][exist][etiquette + 1]++;
+                    break; // Sortir de la boucle dès qu'on trouve l'étiquette correspondante
+                }
+            }
+            nbr_apparition[i][exist][0]++; // Incrémenter le total d'apparitions de cette valeur
         }
         count[i] = index; // Nombre de valeurs uniques pour cet attribut
     }
-
+    
     // Assigner les valeurs à attrib et retourner
     attrib.nbr_valeur_attribut = count;
     attrib.tableau = tableau;
@@ -237,13 +250,16 @@ attribut Valeur_Attribut(stockage s) {
     return attrib;
 }
 
+
 //Affichage de attribut
 void affiche_attribut(attribut a,stockage s){
-    for (int i=0;i<s.nbr_attributs;i++){
+    for (int i=0;i<s.nbr_attributs-1;i++){
         printf("Attribut %s :\n",s.tableau[0][i]);
         for (int j=0; j<a.nbr_valeur_attribut[i];j++){
-            printf("Valeur %d : %s (Nombre d'apparitions : %d)\n",j+1,a.tableau[i][j],a.nbr_apparition[i][j]);
-            
+            printf("Valeur %d : %s (Nombre d'apparitions : %d)\n",j+1,a.tableau[i][j],a.nbr_apparition[i][j][0]);
+            for (int etiquette=0;etiquette<s.nbr_etiquette;etiquette++){
+                printf("Nombre de cette valeur avec etiquette : %s = %d\n",s.liste_etiquette[etiquette],a.nbr_apparition[i][j][etiquette+1]);
+            }
         }
         printf("Nombre de valeurs : %d",a.nbr_valeur_attribut[i]);
         printf("\n");
@@ -272,12 +288,10 @@ void free_attribut(attribut a, stockage s) {
 }
 
 //Calcul de l'entropie
+/*
 float entropie(int *nbr_apparition, int nbr_valeurs) {
     float entropie = 0.0;
     float total = 0.0;
-    for (int i = 0; i < nbr_valeurs; i++) {
-        total += nbr_apparition[i];
-    }
     printf("total : %f\n",total );
     for (int i = 0; i < nbr_valeurs; i++) {
         float prob =  nbr_apparition[i] / total;
@@ -308,7 +322,7 @@ float gain(attribut attr, stockage s, int set) {
 }
 
 
-
+*/
 
 
 int main(){
@@ -317,11 +331,11 @@ int main(){
     //afficher_tableau(e);
    //afficher_etiquette(e);
    affiche_attribut(a,e);
-   float test=gain(a,e,2);
-    printf("mon test : %f\n",test);
+   //float test=gain(a,e,2);
+    //printf("mon test : %f\n",test);
     //float test2=entropie(a.nbr_apparition[0],a.nbr_valeur_attribut[0]);
     //printf("mont test2 : %f\n",test2);
-    //free_attribut(a,e);
-    //free_stockage(e);
+    free_attribut(a,e);
+    free_stockage(e);
     
 }
