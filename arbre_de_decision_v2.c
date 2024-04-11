@@ -73,13 +73,13 @@ stockage extraction_fichier(char * fichier){
     printf("nbr attributs : %d\n",s.nbr_attributs);
     printf("nbr exemples : %d\n",s.nbr_exemples);
     printf("nbr mots : %d\n",nbr_mots);
-    printf("nbr lignes : %d\n",nbr_lignes);
-    tableau=malloc(sizeof(char **)*(nbr_lignes+1)); //On initialise notre tableau de chaine de caractère
+    printf("nbr lignes : %d\n",nbr_lignes+1);
+    tableau=malloc(sizeof(char **)*(s.nbr_exemples+1)); //On initialise notre tableau de chaine de caractère
     if (tableau == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
+    for(i=0;i<nbr_lignes+1;i++){ //On recupere les donnees du fichier
         tableau[i]=malloc(sizeof(char*)*(s.nbr_attributs+1));  //On ajoute 1 pour garder un espace pour le "signal" d'arret (c'est pour le pc)
         if (tableau[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
@@ -115,11 +115,13 @@ stockage extraction_fichier(char * fichier){
         exit(1);
     }
     for(i=0;i<s.nbr_attributs-1;i++){
+        /*
         s.liste_attributs_dispo[i]=malloc(sizeof(char)*20);
         if (s.liste_attributs_dispo[i] == NULL) {
             fprintf(stderr, "Memory allocation failed for attribute name.\n");
             exit(1);
         }
+        */
         s.liste_attributs_dispo[i] = strdup(s.tableau[0][i]);
         printf("%s\n",s.liste_attributs_dispo[i]);
 
@@ -141,38 +143,42 @@ void afficher_tableau(stockage s){
 }
 
 void afficher_etiquette(stockage s){
-    printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
+    //printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
 
     for(int i=0;i<s.nbr_etiquette;i++){
-        printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
+        //printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
     }
-}
-
-void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
-    for (int i = 0; i < nbr_lignes; i++) {
-        for (int j = 0; j < nbr_mots; j++) {
-            printf("tab %d,%d: %s\n",i,j,tableau[i][j]);
-            free(tableau[i][j]);
-        }
-        free(tableau[i]);
-    }
-    free(tableau);
 }
 
 void free_stockage(stockage s) {
+    // Libérer la mémoire allouée pour chaque attribut de chaque exemple
+    for (int i = 0; i < s.nbr_exemples + 1; i++) {
+        for (int j = 0; j < s.nbr_attributs + 1; j++) {
+            free(s.tableau[i][j]);
+        }
+        free(s.tableau[i]);
+    }
 
-    free_tableau(s.tableau, s.nbr_exemples+1, s.nbr_attributs);
-    for (int i=0;i<s.nbr_attributs-1;i++){
-        printf("%s\n",s.liste_attributs_dispo[i]);
+    // Libérer la mémoire pour le tableau de données
+    free(s.tableau);
+
+    // Libérer la mémoire pour chaque attribut disponible
+    for (int i = 0; i < s.nbr_attributs -1; i++) {
         free(s.liste_attributs_dispo[i]);
     }
+
+    // Libérer la mémoire pour la liste des attributs disponibles
     free(s.liste_attributs_dispo);
+
+    // Libérer la mémoire pour chaque étiquette
     for (int i = 0; i < s.nbr_etiquette; i++) {
-        printf("etiquette : %s\n",s.liste_etiquette[i]);
         free(s.liste_etiquette[i]);
     }
+
+    // Libérer la mémoire allouée pour la liste des étiquettes
     free(s.liste_etiquette);
 }
+
 
 // Calcul de gain d'entropie
 
@@ -268,24 +274,32 @@ void affiche_attribut(attribut a,stockage s){
 
 //Libere la mémoire de attribut
 void free_attribut(attribut a, stockage s) {
-    // Libération de la mémoire allouée pour le tableau de valeurs
+    // Libérer la mémoire pour chaque ligne de tableau
     for (int i = 0; i < s.nbr_attributs; i++) {
         for (int j = 0; j < s.nbr_exemples; j++) {
             free(a.tableau[i][j]);
         }
         free(a.tableau[i]);
     }
+    
+    // Libérer la mémoire pour tableau
     free(a.tableau);
 
-    // Libération de la mémoire allouée pour le tableau de nombre d'apparition
+    // Libérer la mémoire pour les lignes de nbr_apparition
     for (int i = 0; i < s.nbr_attributs; i++) {
+        for (int j = 0; j < s.nbr_exemples; j++) {
+            free(a.nbr_apparition[i][j]);
+        }
         free(a.nbr_apparition[i]);
     }
+    
+    // Libérer la mémoire de nbr_apparition
     free(a.nbr_apparition);
 
-    // Libération de la mémoire allouée pour le tableau de nombre de valeurs attributaires
+    // Libérer la mémoire de count
     free(a.nbr_valeur_attribut);
 }
+
 
 //Calcul de l'entropie
 /*
@@ -327,15 +341,15 @@ float gain(attribut attr, stockage s, int set) {
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    //attribut a=Valeur_Attribut(e);
-    //afficher_tableau(e);
-   //afficher_etiquette(e);
-   //affiche_attribut(a,e);
+    attribut a=Valeur_Attribut(e);
+    afficher_tableau(e);
+    afficher_etiquette(e);
+    affiche_attribut(a,e);
    //float test=gain(a,e,2);
     //printf("mon test : %f\n",test);
     //float test2=entropie(a.nbr_apparition[0],a.nbr_valeur_attribut[0]);
     //printf("mont test2 : %f\n",test2);
-    //free_attribut(a,e);
+    free_attribut(a,e);
     free_stockage(e);
     
 }
