@@ -67,7 +67,7 @@ stockage extraction_fichier(char * fichier){
     rewind(fd);
 
     s.nbr_attributs=nbr_mots+1;
-    s.nbr_exemples=nbr_lignes-1;
+    s.nbr_exemples=nbr_lignes;
     s.nbr_etiquette=0;
     //On revient au debut du fichier
     printf("nbr attributs : %d\n",s.nbr_attributs);
@@ -79,7 +79,7 @@ stockage extraction_fichier(char * fichier){
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    for(i=0;i<nbr_lignes;i++){ //On recupere les donnees du fichier
+    for(i=0;i<nbr_lignes+1;i++){ //On recupere les donnees du fichier
         tableau[i]=malloc(sizeof(char*)*(s.nbr_attributs+1));  //On ajoute 1 pour garder un espace pour le "signal" d'arret (c'est pour le pc)
         if (tableau[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
@@ -97,7 +97,7 @@ stockage extraction_fichier(char * fichier){
                 //printf("pos:%d mot:%s\n",pos,tableau[i][j]);
                 pos++;
             }
-            //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
+            printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
 
             tableau[i][j][pos]='\0';
             
@@ -141,17 +141,17 @@ void afficher_tableau(stockage s){
 }
 
 void afficher_etiquette(stockage s){
-    printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
+    //printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
 
     for(int i=0;i<s.nbr_etiquette;i++){
-        printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
+        //printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
     }
 }
 
 void free_tableau(char ***tableau, int nbr_lignes, int nbr_mots) {
     for (int i = 0; i < nbr_lignes; i++) {
         for (int j = 0; j < nbr_mots; j++) {
-            printf("tab %d,%d: %s\n",i,j,tableau[i][j]);
+            //printf("tab %d,%d: %s\n",i,j,tableau[i][j]);
             free(tableau[i][j]);
         }
         free(tableau[i]);
