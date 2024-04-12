@@ -308,11 +308,11 @@ float entropie(int *nbr_apparition, int nbr_etiquette) {
     float total = nbr_apparition[0];
     printf("total : %f\n",total );
     for (int i = 1; i < nbr_etiquette+1; i++) {
-        float prob =  nbr_apparition[i] / total;
+        float prob =  (float)(nbr_apparition[i] )/ total;
         printf("prob ; %f\n",prob);
         if (prob != 0.0) {
-            entropie = entropie - (prob * log2f(prob));
-            printf("entrop : %f\n",-prob*log2f(prob));
+            entropie = entropie - (prob * log(prob)/log(nbr_etiquette));
+            printf("entrop : %f\n",-prob*log(prob)/log(nbr_etiquette));
         }
     }
    
@@ -328,8 +328,8 @@ float entropie_etiquette(int ** nbr_apparition, int nbr_etiquette,int nbr_exempl
         printf("Nombre_apparition : %d",nbr_apparition[i][i+1]);
         printf("prob ; %f\n",prob);
          if (prob != 0.0) {
-            entropie = entropie - (prob * log2f(prob));
-            printf("entrop : %f\n",-prob*log2f(prob));
+            entropie = entropie - (prob * log(prob)/log(nbr_etiquette));
+            printf("entrop : %f\n",-prob*log(prob)/log(nbr_etiquette));
         }
     }
     return entropie;
@@ -343,17 +343,19 @@ float gain(attribut attr, stockage s, int set) {
     entropie_totale = entropie_etiquette(attr.nbr_apparition[s.nbr_attributs-1], s.nbr_etiquette,s.nbr_exemples);
 
     printf("entropie etiquette: %f\n",entropie_totale);
-    /*
+    
     for (int i = 0; i < attr.nbr_valeur_attribut[set]; i++) {
-        float prob_valeur = (float) attr.nbr_apparition[set][i] / s.nbr_exemples;
+        float prob_valeur = (float) (attr.nbr_apparition[set][i][0] )/ s.nbr_exemples;
+        printf("Valeur total : %d\n",s.nbr_exemples);
         printf("Prob_valuer %f\n",prob_valeur);
-        float entropie_sous_ensemble = entropie(attr.nbr_apparition[i], attr.nbr_valeur_attribut[set]);
+        printf("Test valeur : %d\n",attr.nbr_apparition[set][i][0]);
+        float entropie_sous_ensemble = entropie(attr.nbr_apparition[set][i], s.nbr_etiquette);
         printf("Entropie_sous_ensemnble : %f\n",entropie_sous_ensemble);
         gain_entropique += prob_valeur * entropie_sous_ensemble;
     }
     printf("Gain entropique : %f\n",gain_entropique);
     gain_entropique = entropie_totale - gain_entropique;
-    */
+    
     return gain_entropique;
 }
 
@@ -367,7 +369,7 @@ int main(){
     afficher_tableau(e);
     afficher_etiquette(e);
     affiche_attribut(a,e);
-    float test=gain(a,e,2);
+    float test=gain(a,e,0);
     printf("mon test : %f\n",test);
     float test2=entropie(a.nbr_apparition[0][0],e.nbr_etiquette);
     printf("mont test2 : %f\n",test2);
