@@ -17,6 +17,7 @@ typedef struct attribut{
     char *** tableau;
     int * nbr_valeur_attribut;
     int *** nbr_apparition;
+    int nbr_exemples_pris_en_compte;
 
 }attribut;
 
@@ -183,9 +184,10 @@ void free_stockage(stockage s) {
 // Calcul de gain d'entropie
 
 //Recupération des valeurs possibles pour chaque attribut.
-attribut Valeur_Attribut(stockage s) {
+attribut Valeur_Attribut(stockage s,int debut,int fin) {
     attribut attrib;
-    printf("Nombre exemple : %d ",s.nbr_exemples);
+    attrib.nbr_exemples_pris_en_compte=fin-debut;
+    printf("Nombre exemple : %d ",attrib.nbr_exemples_pris_en_compte);
     char ***tableau = malloc(sizeof(char **) * (s.nbr_attributs+1));
     int *count = malloc(sizeof(int) * s.nbr_attributs);
     int ***nbr_apparition = malloc(sizeof(int **) * (s.nbr_attributs+1));
@@ -197,14 +199,14 @@ attribut Valeur_Attribut(stockage s) {
 
     // Initialisation des tableaux de pointeurs
     for (int i = 0; i < s.nbr_attributs+1; i++) {
-        tableau[i] = malloc(sizeof(char *) *( s.nbr_exemples));
-        nbr_apparition[i] = calloc(s.nbr_exemples, sizeof(int*));
+        tableau[i] = malloc(sizeof(char *) *( attrib.nbr_exemples_pris_en_compte));
+        nbr_apparition[i] = calloc(attrib.nbr_exemples_pris_en_compte, sizeof(int*));
 
         if (tableau[i] == NULL || nbr_apparition[i] == NULL) {
             fprintf(stderr, "Memory allocation failed.\n");
             exit(1);
         }
-        for (int j = 0; j < s.nbr_exemples; j++) {
+        for (int j = 0; j < attrib.nbr_exemples_pris_en_compte; j++) {
             tableau[i][j] = NULL;
             nbr_apparition[i][j] = malloc((s.nbr_etiquette + 1) * sizeof(int));
             for (int etiquette = 0; etiquette < s.nbr_etiquette + 1; etiquette++) {
@@ -218,7 +220,7 @@ attribut Valeur_Attribut(stockage s) {
         int index = 0; // Index pour stocker les valeurs uniques
 
         // Parcourir chaque exemple pour récupérer les valeurs uniques
-        for (int j = 1; j < s.nbr_exemples +1 ; j++) {
+        for (int j = 1; j < attrib.nbr_exemples_pris_en_compte +1 ; j++) {
             char *valeur = s.tableau[j][i]; // Valeur de l'attribut dans cet exemple
             int exist = -1; // Variable pour stocker l'indice de la valeur si elle existe déjà, -1 sinon
 
@@ -276,7 +278,7 @@ void affiche_attribut(attribut a,stockage s){
 void free_attribut(attribut a, stockage s) {
     // Libérer la mémoire pour chaque ligne de tableau
     for (int i = 0; i < s.nbr_attributs+1; i++) {
-        for (int j = 0; j < s.nbr_exemples; j++) {
+        for (int j = 0; j < a.nbr_exemples_pris_en_compte; j++) {
             free(a.tableau[i][j]);
         }
         free(a.tableau[i]);
@@ -287,7 +289,7 @@ void free_attribut(attribut a, stockage s) {
 
     // Libérer la mémoire pour les lignes de nbr_apparition
     for (int i = 0; i < s.nbr_attributs+1; i++) {
-        for (int j = 0; j < s.nbr_exemples; j++) {
+        for (int j = 0; j < a.nbr_exemples_pris_en_compte; j++) {
             free(a.nbr_apparition[i][j]);
         }
         free(a.nbr_apparition[i]);
@@ -340,13 +342,13 @@ float entropie_etiquette(int ** nbr_apparition, int nbr_etiquette,int nbr_exempl
 float gain(attribut attr, stockage s, int set) {
     float gain_entropique = 0.0;
     float entropie_totale = 0.0;
-    entropie_totale = entropie_etiquette(attr.nbr_apparition[s.nbr_attributs-1], s.nbr_etiquette,s.nbr_exemples);
+    entropie_totale = entropie_etiquette(attr.nbr_apparition[s.nbr_attributs-1], s.nbr_etiquette,attr.nbr_exemples_pris_en_compte);
 
     printf("entropie etiquette: %f\n",entropie_totale);
     
     for (int i = 0; i < attr.nbr_valeur_attribut[set]; i++) {
         float prob_valeur = (float) (attr.nbr_apparition[set][i][0] )/ s.nbr_exemples;
-        printf("Valeur total : %d\n",s.nbr_exemples);
+        printf("Valeur total : %d\n",attr.nbr_exemples_pris_en_compte);
         printf("Prob_valuer %f\n",prob_valeur);
         printf("Test valeur : %d\n",attr.nbr_apparition[set][i][0]);
         float entropie_sous_ensemble = entropie(attr.nbr_apparition[set][i], s.nbr_etiquette);
@@ -359,16 +361,38 @@ float gain(attribut attr, stockage s, int set) {
     return gain_entropique;
 }
 
+int Choix_attribut_noeud(attribut attr, stockage s){
+    //Parcours les attributs disponible et prend l'attribut qui a le gain entropique le plus élevé.
+    float max_gain = -1;
+    int max_index = -1;
+    for(int i = 0; i < s.nbr_attributs - 1; i++){ //Prend en compte tous les attributs actuellement=CACA
+        float g = gain(attr, s, i);
+        if(g > max_gain){
+            max_gain = g;
+            max_index = i;
+        }
+    }
+    return max_index;
+}
+
+
+void Trie_Stockage_attribut(stockage s, int attributchoisie,int debut, int fin){
+    //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
+}
+
+
+
 
 
 
 
 int main(){
     stockage e=extraction_fichier("test.txt");
-    attribut a=Valeur_Attribut(e);
+    attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
     afficher_tableau(e);
     afficher_etiquette(e);
     affiche_attribut(a,e);
+    printf("L'attribut choisi : %s",e.liste_attributs_dispo[Choix_attribut_noeud(a,e)]);
     float test=gain(a,e,0);
     printf("mon test : %f\n",test);
     float test2=entropie(a.nbr_apparition[0][0],e.nbr_etiquette);
