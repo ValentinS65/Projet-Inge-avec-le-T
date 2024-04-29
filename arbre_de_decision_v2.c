@@ -13,6 +13,13 @@ typedef struct stockage{
     int nbr_etiquette;
 }stockage;
 
+typedef struct attribut{
+    char *** tableau;
+    int * nbr_valeur_attribut;
+    int ** nbr_apparition;
+
+}attribut;
+
 
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
@@ -58,6 +65,7 @@ stockage extraction_fichier(char * fichier){
         c=fgetc(fd);
     }
     rewind(fd);
+
     s.nbr_attributs=nbr_mots+1;
     s.nbr_exemples=nbr_lignes-1;
     s.nbr_etiquette=0;
@@ -98,8 +106,8 @@ stockage extraction_fichier(char * fichier){
                 break;
             }            
         }
+        
     }
-    fclose(fd);
     s.tableau=tableau;
     s.liste_etiquette=cherche_etiquette(&s);
     s.liste_attributs_dispo=malloc(sizeof(char*)*s.nbr_attributs-2); //-2 car on enleve l'etiquette
@@ -118,6 +126,7 @@ stockage extraction_fichier(char * fichier){
 
     }
 
+    fclose(fd);
     return s;
 }
 
@@ -165,9 +174,123 @@ void free_stockage(stockage s) {
     free(s.liste_etiquette);
 }
 
+// Calcul de gain d'entropie
+
+//Recupération des valeurs possibles pour chaque attribut.
+attribut Valeur_Attribut(stockage s){
+    char *** tableau=malloc(sizeof(char**)*s.nbr_exemples+1);
+    int * count=malloc(sizeof(int)*s.nbr_attributs);
+    int **nbr_apparition=malloc(sizeof(int*)*s.nbr_attributs);
+   //On initialise notre tableau de chaine de caractère
+    if (tableau == NULL ||count==NULL || nbr_apparition==NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(1);
+    }
+    for(int i=0;i<s.nbr_exemples;i++){ //On recupere les donnees du fichier
+        tableau[i]=malloc(sizeof(char*)*s.nbr_attributs); 
+        
+        if (tableau[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
+        for(int j=0;j<s.nbr_attributs+1;j++){ 
+            tableau[i][j]=NULL;
+            nbr_apparition[j]=calloc(s.nbr_exemples,sizeof(int));
+        }
+    }
+    // Parcourir chaque attribut
+    for (int i = 0; i < s.nbr_attributs - 1; i++) {
+        int index = 0; // Index pour stocker les valeurs uniques
+
+        // Parcourir chaque exemple pour récupérer les valeurs uniques
+        for (int j = 1; j < s.nbr_exemples + 1; j++) {
+            char *valeur = s.tableau[j][i]; // Valeur de l'attribut dans cet exemple
+
+            // Vérifier si cette valeur existe déjà dans les valeurs attributs
+            int exist = 0;
+            for (int k = 0; k < index; k++) {
+                if (strcmp(valeur, tableau[i][k]) == 0) {
+                    exist = 1; // La valeur existe déjà
+                    nbr_apparition[i][k]++;
+                    break;
+                }
+            }
+
+            // Si la valeur n'existe pas déjà, l'ajouter
+            if (!exist) {
+                tableau[i][index] = strdup(valeur);
+                nbr_apparition[i][index]=1;
+                index++;
+            }
+        }
+        count[i]=index-1;
+    }
+    attribut attrib;
+    attrib.nbr_valeur_attribut=count;
+    attrib.tableau=tableau;
+    attrib.nbr_apparition=nbr_apparition;
+    return attrib;
+}
+
+//Libere la mémoire de attribut
+void free_attribut(attribut a, stockage s) {
+    // Libération de la mémoire allouée pour le tableau de valeurs
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        for (int j = 0; j < s.nbr_exemples; j++) {
+            free(a.tableau[i][j]);
+        }
+        free(a.tableau[i]);
+    }
+    free(a.tableau);
+
+    // Libération de la mémoire allouée pour le tableau de nombre d'apparition
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        free(a.nbr_apparition[i]);
+    }
+    free(a.nbr_apparition);
+
+    // Libération de la mémoire allouée pour le tableau de nombre de valeurs attributaires
+    free(a.nbr_valeur_attribut);
+}
+/*
+//Calcul de l'entropie
+float entropie(int *nbr_apparition, int nbr_valeurs) {
+    float entropie = 0.0;
+    float total = 0.0;
+    for (int i = 0; i < nbr_valeurs; i++) {
+        total += nbr_apparition[i];
+    }
+    for (int i = 0; i < nbr_valeurs; i++) {
+        float prob = (float) nbr_apparition[i] / total;
+        if (prob != 0.0) {
+            entropie -= prob * log2(prob);
+        }
+    }
+    return entropie;
+}
+//Calcul du gain entropique
+float gain(attribut attr, stockage s, int set) {
+    float gain_entropique = 0.0;
+    float entropie_totale = entropie(attr.nbr_apparition[set], s.nbr_etiquette);
+    for (int i = 0; i < attr.nbr_valeur_attribut[set]; i++) {
+        float prob_valeur = (float) attr.nbr_apparition[set][i] / s.nbr_exemples;
+        float entropie_sous_ensemble = entropie(attr.nbr_apparition[i], attr.nbr_valeur_attribut[set]);
+        gain_entropique += prob_valeur * entropie_sous_ensemble;
+    }
+    gain_entropique = entropie_totale - gain_entropique;
+    return gain_entropique;
+}
+*/
+
+
+
+
 int main(){
     stockage e=extraction_fichier("test.txt");
-    afficher_tableau(e);
-    afficher_etiquette(e);
-    free_stockage(e);
+    //attribut a=Valeur_Attribut(e);
+    //afficher_tableau(e);
+    //afficher_etiquette(e);
+    //free_attribut(a,e);
+    //free_stockage(e);
+    
 }
