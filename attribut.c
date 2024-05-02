@@ -14,28 +14,28 @@ static attribut initialise_attribut(stockage s){
     int ** compteur;
     int * nb_elements_par_colonne;
     //Initialisation de nos tableaux)
-    compteur=malloc(sizeof(int *)*(s.nbr_exemples+1));
+    compteur=malloc(sizeof(int *)*(s.nbr_valeur_attribut+1));
     if (compteur == NULL){
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    pointeur=malloc(sizeof(char***)*(s.nbr_exemples+1));
+    pointeur=malloc(sizeof(char***)*(s.nr_valeur_attribut+1));
     if (pointeur == NULL){
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    nb_elements_par_colonne = malloc(sizeof(int) * (s.nbr_exemples + 1));
+    nb_elements_par_colonne = malloc(sizeof(int) * (s.nbr_valeur_attribut + 1));
     if (nb_elements_par_colonne == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    for (int i=0;i<s.nbr_exemples+1;i++){
-        pointeur[i]=malloc(sizeof(char**)*(s.nbr_exemples+1));
+    for (int i=0;i<s.nbr_valeur_attribut+1;i++){
+        pointeur[i]=malloc(sizeof(char**)*(s.nbr_valeur_attribut+1));
         if (pointeur[i] == NULL){
             fprintf(stderr, "Memory allocation failed.\n");
             exit(1);
         }
-        compteur[i]=malloc(sizeof(int)*(s.nbr_exemples+1));
+        compteur[i]=malloc(sizeof(int)*(s.nbr_valeur_attribut+1));
         if (compteur[i] == NULL){
             fprintf(stderr, "Memory allocation failed.\n");
             exit(1);
@@ -132,13 +132,7 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
     return attr;
 }
 
-attribut vide_attribut(attribut a,stockage s){
-    for (int i=0;i<s.nbr_exemples;i++){
-        for (int j=0;j<s.nbr_exemples;j++){
-            a.pointeur[i][j]=NULL;
-        }
-    }
-}
+
 
 int main(){
     stockage e=extraction_fichier("test.txt");
