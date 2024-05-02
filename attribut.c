@@ -8,7 +8,7 @@
 
 
 //Initialiseur de la structure attribut
-attribut initialise_attribut(stockage s){
+ attribut initialise_attribut(stockage s){
     attribut a;
     char *** pointeur;
     int ** compteur;
@@ -65,7 +65,7 @@ void affiche_attribut(attribut attr){
 }
 
 attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
-    static attribut attr=initialise_attribut(s);
+    attribut attr=initialise_attribut(s);
     for (int e=debut;e<fin;e++){ //PArcours tous les exemples
         int i=0;
         int exit1=0; //exit de la première boucle
@@ -108,6 +108,7 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
         
 
     }
+
     return attr;
 }
 
@@ -131,9 +132,8 @@ int main(){
     //float test2=entropie(a.nbr_apparition[0][0],e.nbr_etiquette);
     //printf("mont test2 : %f\n",test2);
     //free_attribut(a,e);
-    attribut attr=initialise_attribut(e);
-    attr=rempli_attribut(attr,e,0,1,e.nbr_exemples+1);
-    affiche_attribut(attr);
+   rempli_attribut(e,0,1,e.nbr_exemples+1);
+
 
     free_stockage(e);
     
