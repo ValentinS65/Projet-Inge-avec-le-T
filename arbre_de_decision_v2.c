@@ -300,12 +300,8 @@ void free_attribut(attribut a, stockage s) {
     // Libérer la mémoire de count
     free(a.nbr_valeur_attribut);
 }
-<<<<<<< HEAD
-/*
-=======
 
 
->>>>>>> 3adfb6ef81303c4ea021e88a584e1801a75fea1d
 //Calcul de l'entropie
 
 float entropie(int *nbr_apparition, int nbr_etiquette) {
@@ -363,9 +359,6 @@ float gain(attribut attr, stockage s, int set) {
     
     return gain_entropique;
 }
-<<<<<<< HEAD
-*/
-=======
 
 int Choix_attribut_noeud(attribut attr, stockage s){
     //Parcours les attributs disponible et prend l'attribut qui a le gain entropique le plus élevé.
@@ -384,11 +377,15 @@ int Choix_attribut_noeud(attribut attr, stockage s){
 
 void Trie_Stockage_attribut(stockage s, int attributchoisie,int debut, int fin){
     //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
+    for(int i=debut;i<fin;i++){
+
+        
+
+    }
 }
 
 
 
->>>>>>> 3adfb6ef81303c4ea021e88a584e1801a75fea1d
 
 
 
