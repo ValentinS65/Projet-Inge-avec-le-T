@@ -8,7 +8,7 @@
 
 
 //Initialiseur de la structure attribut
- attribut initialise_attribut(stockage s){
+static attribut initialise_attribut(stockage s){
     attribut a;
     char *** pointeur;
     int ** compteur;
@@ -76,8 +76,13 @@ void renitialise_attribut(attribut attr){
 
 
 attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
-    attribut attr=initialise_attribut(s);
-    renitialise_attribut(attr);
+    static attribut attr; // Déclaration de la variable statique
+    static int initialized = 0; // Variable pour vérifier si attr a été initialisée
+
+    if (!initialized) {
+        attr = initialise_attribut(s); // Initialisation de attr uniquement lors du premier appel
+        initialized = 1;
+    }
     for (int e=debut;e<fin;e++){ //PArcours tous les exemples
         int i=0;
         int exit1=0; //exit de la première boucle
