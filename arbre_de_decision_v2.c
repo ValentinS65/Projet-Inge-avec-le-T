@@ -2,17 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "arbre_de_decision_v2.h"
 
 
-typedef struct stockage{
-    char *** tableau;
-    char ** liste_attributs_dispo;
-    char ** liste_etiquette;
-    int nbr_attributs;
-    int nbr_exemples;
-    int nbr_etiquette;
-}stockage;
-
+/*
 typedef struct attribut{
     char *** tableau;
     int * nbr_valeur_attribut;
@@ -21,7 +14,7 @@ typedef struct attribut{
 
 }attribut;
 
-
+*/
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
         if(strcmp(mot,l[i])==0){
@@ -180,6 +173,7 @@ void free_stockage(stockage s) {
 }
 
 
+/*
 // Calcul de gain d'entropie
 
 //Recupération des valeurs possibles pour chaque attribut.
@@ -300,10 +294,10 @@ void free_attribut(attribut a, stockage s) {
     // Libérer la mémoire de count
     free(a.nbr_valeur_attribut);
 }
-
+*/
 
 //Calcul de l'entropie
-
+/*
 float entropie(int *nbr_apparition, int nbr_etiquette) {
     float entropie = 0.0;
     float total = nbr_apparition[0];
@@ -377,31 +371,12 @@ int Choix_attribut_noeud(attribut attr, stockage s){
 
 void Trie_Stockage_attribut(stockage s, int attributchoisie,int debut, int fin){
     //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
-    for(int i=debut;i<fin;i++){
-
-        
-
-    }
+    //ENleve egalement l'attribut des attributs disponible.
 }
 
 
+*/
 
 
 
 
-
-int main(){
-    stockage e=extraction_fichier("test.txt");
-    attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
-    afficher_tableau(e);
-    afficher_etiquette(e);
-    affiche_attribut(a,e);
-    printf("L'attribut choisi : %s",e.liste_attributs_dispo[Choix_attribut_noeud(a,e)]);
-    float test=gain(a,e,0);
-    printf("mon test : %f\n",test);
-    float test2=entropie(a.nbr_apparition[0][0],e.nbr_etiquette);
-    printf("mont test2 : %f\n",test2);
-    free_attribut(a,e);
-    free_stockage(e);
-    
-}
