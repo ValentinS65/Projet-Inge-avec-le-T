@@ -133,7 +133,8 @@ void afficher_tableau(stockage s){
         printf("\n");
     }
     printf("nbr attributs : %d\n",s.nbr_attributs);
-    printf("nbr exemples : %d\n",s.nbr_exemples); 
+    printf("nbr exemples : %d\n",s.nbr_exemples);
+    printf("nbr etiquette : %d\n",s.nbr_etiquette); 
 }
 
 void afficher_etiquette(stockage s){
