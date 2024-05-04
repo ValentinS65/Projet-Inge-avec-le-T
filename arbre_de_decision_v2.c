@@ -438,21 +438,25 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
     //ENleve egalement l'attribut des attributs disponible.
     int i,j;
     int ** trie = init_tab(s->nbr_valeur_max_attribut,fin-debut);
-    int * valeur_possible=cherche_valeur(s,attributchoisie,debut,fin);
+    int * valeur_possible=cherche_valeur(*s,attributchoisie,debut,fin);
     for(i=debut;i<fin+1;i++){
-        for(j=0,j<valeur_possible[0];j++){
+        for(j=0;j<valeur_possible[0];j++){
             if(strcmp(s->tableau[valeur_possible[j+1]][attributchoisie],s->tableau[i][attributchoisie])==1){
                 trie[j][trie[j][0]]=i;
                 trie[j][0]++;
             }
         }
     }
-    int * tmp;
-    j=0
+    char ** tmp;
+    j=0;
     for(i=debut;i<fin;i++){
-        tmp=s->tableau[i][attributchoisie];
-        s->tableau[i][attributchoisie]=s->tableau[trie[j][trie[j][0]]][attributchoisie];
-        s->tableau[trie[j][trie[j][0]]][attributchoisie]=tmp;
+        tmp=s->tableau[i];
+        s->tableau[i]=s->tableau[trie[j][trie[j][0]]];
+        s->tableau[trie[j][trie[j][0]]]=tmp;
+        trie[j][0]--;
+        if(trie[j][0]==0){
+            j++;
+        }
     }
 }
 

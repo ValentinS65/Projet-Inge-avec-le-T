@@ -19,5 +19,5 @@ void afficher_tableau(stockage s);
 void afficher_etiquette(stockage s);
 void free_stockage(stockage s);
 int ** init_tab(int lignes,int colonnes);
-void Trie_Stockage_attribut(stockage s, int attributchoisie,int debut, int fin);
+void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin);
 #endif 
