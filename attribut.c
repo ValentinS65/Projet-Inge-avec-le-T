@@ -102,7 +102,7 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
             if (strcmp(s.tableau[e][index_attribut],attr.pointeur[i][0])==0){
                 attr.compteur[i][0]++;
                 exit1=1;
-                printf("Sa passe ici 2 : %s\n",attr.pointeur[i][0]);
+                //printf("Sa passe ici 2 : %s\n",attr.pointeur[i][0]);
             }
             else{
                 i++;
@@ -113,14 +113,14 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
             attr.pointeur[i][0]=s.tableau[e][index_attribut];
             attr.compteur[i][0]=1;
             attr.nb_colonnes++;
-            printf("Sa passe ici 1 : %s\n",attr.pointeur[i][0]);
+            //printf("Sa passe ici 1 : %s\n",attr.pointeur[i][0]);
         }
         
         while (exit2==0 && j<attr.nb_elements_par_colonne[i]+1){
             if (strcmp(s.tableau[e][s.nbr_attributs-1],attr.pointeur[i][j])==0){
                 attr.compteur[i][j]++;
                 exit2=1;
-                printf("Sa passe ici 3 :%s \n",attr.pointeur[i][j]);
+                //printf("Sa passe ici 3 :%s \n",attr.pointeur[i][j]);
             }
             else{
                 j++;
@@ -131,7 +131,7 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
             attr.pointeur[i][j]=s.tableau[e][s.nbr_attributs-1];
             attr.compteur[i][j]=1;
             attr.nb_elements_par_colonne[i]++;
-            printf("Sa passe ici 4 %s \n ",attr.pointeur[i][j]);
+            //printf("Sa passe ici 4 %s \n ",attr.pointeur[i][j]);
         }
         
         
