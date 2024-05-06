@@ -40,6 +40,32 @@ char ** cherche_etiquette(stockage *s){
     return liste_etiquette;
 }
 
+int notInList(int i,int j,stockage s,int * dejaVu, int taille){
+    for(int k=0;k<taille+1;k++){
+        if(strcmp(s.tableau[i][dejaVu[k]],s.tableau[i][j])==0){
+            return 0;
+        }
+    }
+    return 1;
+}
+int cherche_valeur_max(stockage s){
+    int max=0;
+    int * dejaVu=malloc(sizeof(int)*s.nbr_exemples);
+    int taille=0;
+    for(int i=0;i<s.nbr_attributs;i++){
+        for(int j=0;j<s.nbr_exemples;j++){
+            if(taille=0 || notInList(i,j,s,dejaVu,taille)==1){
+                dejaVu[taille]=j;
+                taille++;
+            }
+        }
+        if(taille>max){
+            max=taille;
+        }
+        taille=0;
+    }
+    return max;
+}
 
 stockage extraction_fichier(char * fichier){
     stockage s;
@@ -92,7 +118,6 @@ stockage extraction_fichier(char * fichier){
                 pos++;
             }
             //printf("i:%d,j:%d:%s\n",i,j,tableau[i][j]);
-
             tableau[i][j][pos]='\0';
             
             if(c=='\n'){
@@ -120,6 +145,7 @@ stockage extraction_fichier(char * fichier){
         printf("%s\n",s.liste_attributs_dispo[i]);
 
     }
+    s.nbr_valeur_max_attribut=cherche_valeur_max(s);
     fclose(fd);
     return s;
 }
@@ -369,15 +395,71 @@ int Choix_attribut_noeud(attribut attr, stockage s){
     }
     return max_index;
 }
+*/
 
+int ** init_tab(int lignes,int colonnes){
+    int ** tableau;
+    // Allocation de mémoire pour les pointeurs de lignes
+    if (tableau == NULL) {
+        tableau = (int **)malloc(lignes * sizeof(int *));
+        if (tableau == NULL) {
+            fprintf(stderr, "Erreur d'allocation de mémoire\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    // Allocation de mémoire pour chaque ligne
+    for (int i = 0; i < lignes; ++i) {
+        tableau[i] = (int *)malloc((colonnes+1) * sizeof(int)); //on ajoute une case pour stocker la taille de la ligne en son debut
+        if (tableau[i] == NULL) {
+            fprintf(stderr, "Erreur d'allocation de mémoire\n");
+            exit(EXIT_FAILURE);
+        }
+        tableau[i][0]=1;
+    }
 
-void Trie_Stockage_attribut(stockage s, int attributchoisie,int debut, int fin){
-    //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
-    //ENleve egalement l'attribut des attributs disponible.
+    return tableau;
 }
 
+int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin){
+    int * dejaVu=malloc(sizeof(int)*(s.nbr_valeur_max_attribut+1));
+    int taille=1;
+    for(int i=debut;i<fin+1;i++){
+            if(taille=1 || notInList(i,attributchoisie,s,dejaVu,taille)==1){
+                dejaVu[taille]=i;
+                taille++;
+            }
+    }
+    dejaVu[0]=taille; //on stocke la taille dans la premiere case de dejaVu
+    return dejaVu;
+}
 
-*/
+void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
+    //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
+    //ENleve egalement l'attribut des attributs disponible.
+    int i,j;
+    int ** trie = init_tab(s->nbr_valeur_max_attribut,fin-debut);
+    int * valeur_possible=cherche_valeur(*s,attributchoisie,debut,fin);
+    for(i=debut;i<fin+1;i++){
+        for(j=0;j<valeur_possible[0];j++){
+            if(strcmp(s->tableau[valeur_possible[j+1]][attributchoisie],s->tableau[i][attributchoisie])==1){
+                trie[j][trie[j][0]]=i;
+                trie[j][0]++;
+            }
+        }
+    }
+    char ** tmp;
+    j=0;
+    for(i=debut;i<fin;i++){
+        tmp=s->tableau[i];
+        s->tableau[i]=s->tableau[trie[j][trie[j][0]]];
+        s->tableau[trie[j][trie[j][0]]]=tmp;
+        trie[j][0]--;
+        if(trie[j][0]==0){
+            j++;
+        }
+    }
+}
+
 
 
 
