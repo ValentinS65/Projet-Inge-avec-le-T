@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "arbre_de_decision_v2.h"
+#include "stockage.h"
 #include "attribut.h"
 
 

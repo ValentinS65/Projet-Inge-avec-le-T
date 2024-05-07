@@ -17,4 +17,4 @@ arbre_de_decision_v2.o :arbre_de_decision_v2.c arbre_de_decision_v2.h
 	gcc -c arbre_de_decision_v2.c -g
 
 clean: 
-	rm -f arbre_de_decision_v2.o attribut.o
+	rm -f stockage.o attribut.o entropie.o 
