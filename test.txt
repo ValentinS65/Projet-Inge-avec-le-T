@@ -1,6 +1,9 @@
-Bonjour ceci est un test etiquette
-7 2 3 4 5 6
-4 8 3 2 11 7
-2 14 3 4 17 6
-19 20 21 22 23 19
-6 2 3 4 5 6
+Couleur Forme taille prix etiquette
+rouge rond grand 10 0
+bleu carre grand 9 0
+rouge rond petit 2 0
+vert rond grand 18 1
+vert carre petit 5 1
+bleu rond grand 17 0
+violet rond grand 17 0
+rouge rond grand 17 0
