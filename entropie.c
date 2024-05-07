@@ -12,7 +12,9 @@ double entropie(attribut attr, int index){
     for(int j=1;j<attr.nb_elements_par_colonne[index]+1;j++){
         double prob = (double )  attr.compteur[index][j] / attr.compteur[index][0];
         printf("Prob num %d : %f",j,prob);
-        entropie-=prob * log(prob) / log_base;
+        if (prob > 0.0) {
+            entropie -= prob *( log(prob) / log_base);
+        }
     }
     return entropie;
 }
@@ -23,8 +25,16 @@ double gain_sans_le_set(attribut attr){
     for (int i=0;i<attr.nb_colonnes;i++){
         total+=attr.compteur[i][0];
     }
+    printf("Le total : %f\n",total);
     for (int i=0;i<attr.nb_colonnes;i++){
-        entropie_current-=(double)(attr.compteur[i][0]/total)*entropie(attr,i);
+        double prob = (double) (attr.compteur[i][0] / total);
+        printf("La proba devant l'entropie %f\n",prob);
+        if (prob > 0.0) {
+            double entropietemp=entropie(attr, i);
+            entropie_current -= prob * entropietemp;
+            printf("Entropie : %f ",entropietemp);
+            printf("Entropie current : %f\n",entropie_current);
+        }
     }
     return entropie_current;
 }
@@ -46,7 +56,7 @@ double entropie_set(stockage s,int debut, int fin){
 
 int choix_attribut(stockage s, int debut, int fin){
     double entropie_du_set = entropie_set(s, debut, fin);
-    double gain_max = 0.0; // Initialisation de gain_max avec l'entropie du set
+    double gain_max = -1.0; // Initialisation de gain_max avec l'entropie du set
     int indice_max = -1;
     for (int i = 0; i < s.nbr_attributs-1; i++){
         attribut attr = rempli_attribut(s, i, debut, fin);
