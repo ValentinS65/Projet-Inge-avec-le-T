@@ -5,16 +5,6 @@
 #include "arbre_de_decision_v2.h"
 
 
-/*
-typedef struct attribut{
-    char *** tableau;
-    int * nbr_valeur_attribut;
-    int *** nbr_apparition;
-    int nbr_exemples_pris_en_compte;
-
-}attribut;
-
-*/
 int inList(char ** l, char * mot,int taille){
     for(int i=0;i<taille;i++){
         if(strcmp(mot,l[i])==0){
@@ -41,8 +31,9 @@ char ** cherche_etiquette(stockage *s){
 }
 
 int notInList(int i,int j,stockage s,int * dejaVu, int taille){
-    for(int k=0;k<taille+1;k++){
-        if(strcmp(s.tableau[i][dejaVu[k]],s.tableau[i][j])==0){
+    for(int k=0;k<taille;k++){
+        //printf("la comparaison passe pour k= %d,i=%d et j=%d\n",k,i,j);
+        if(strcmp(s.tableau[dejaVu[k]][i],s.tableau[j][i])==0){
             return 0;
         }
     }
@@ -50,18 +41,21 @@ int notInList(int i,int j,stockage s,int * dejaVu, int taille){
 }
 int cherche_valeur_max(stockage s){
     int max=0;
-    int * dejaVu=malloc(sizeof(int)*s.nbr_exemples);
     int taille=0;
     for(int i=0;i<s.nbr_attributs;i++){
-        for(int j=0;j<s.nbr_exemples;j++){
-            if(taille=0 || notInList(i,j,s,dejaVu,taille)==1){
+        int * dejaVu=malloc(sizeof(int)*s.nbr_exemples);
+        for(int j=1;j<s.nbr_exemples+1;j++){
+            if(taille==0 || notInList(i,j,s,dejaVu,taille)==1){
                 dejaVu[taille]=j;
+                //printf("dejaVu %d taille %d\n",dejaVu[taille],taille);
                 taille++;
+
             }
         }
         if(taille>max){
             max=taille;
         }
+        free(dejaVu);
         taille=0;
     }
     return max;
@@ -134,18 +128,15 @@ stockage extraction_fichier(char * fichier){
         exit(1);
     }
     for(i=0;i<s.nbr_attributs-1;i++){
-        /*
-        s.liste_attributs_dispo[i]=malloc(sizeof(char)*20);
-        if (s.liste_attributs_dispo[i] == NULL) {
-            fprintf(stderr, "Memory allocation failed for attribute name.\n");
-            exit(1);
-        }
-        */
         s.liste_attributs_dispo[i] = strdup(s.tableau[0][i]);
         printf("%s\n",s.liste_attributs_dispo[i]);
 
     }
     s.nbr_valeur_max_attribut=cherche_valeur_max(s);
+    s.ordre_exemple=malloc(sizeof(int)*s.nbr_exemples);
+    for(i=0;i<s.nbr_exemples;i++){
+        s.ordre_exemple[i]=i+1;
+    }
     fclose(fd);
     return s;
 }
@@ -161,13 +152,14 @@ void afficher_tableau(stockage s){
     printf("nbr attributs : %d\n",s.nbr_attributs);
     printf("nbr exemples : %d\n",s.nbr_exemples);
     printf("nbr etiquette : %d\n",s.nbr_etiquette); 
+    printf("nbr valeur_max_attribut : %d\n",s.nbr_valeur_max_attribut); 
+
 }
 
 void afficher_etiquette(stockage s){
-    //printf("nbr_etiquette i:%d\n",s.nbr_etiquette);
-
+    printf("nbr_etiquette %d\n",s.nbr_etiquette);
     for(int i=0;i<s.nbr_etiquette;i++){
-        //printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
+        printf("etiquette i:%d,%s\n",i,s.liste_etiquette[i]);
     }
 }
 
@@ -400,21 +392,20 @@ int Choix_attribut_noeud(attribut attr, stockage s){
 int ** init_tab(int lignes,int colonnes){
     int ** tableau;
     // Allocation de mémoire pour les pointeurs de lignes
+    tableau = (int **)malloc(lignes * sizeof(int *));
     if (tableau == NULL) {
-        tableau = (int **)malloc(lignes * sizeof(int *));
-        if (tableau == NULL) {
-            fprintf(stderr, "Erreur d'allocation de mémoire\n");
-            exit(EXIT_FAILURE);
-        }
+        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        exit(EXIT_FAILURE);
     }
+
     // Allocation de mémoire pour chaque ligne
-    for (int i = 0; i < lignes; ++i) {
+    for (int i = 0; i < lignes; i++) {
         tableau[i] = (int *)malloc((colonnes+1) * sizeof(int)); //on ajoute une case pour stocker la taille de la ligne en son debut
         if (tableau[i] == NULL) {
             fprintf(stderr, "Erreur d'allocation de mémoire\n");
             exit(EXIT_FAILURE);
         }
-        tableau[i][0]=1;
+        tableau[i][0]=0;
     }
 
     return tableau;
@@ -423,41 +414,60 @@ int ** init_tab(int lignes,int colonnes){
 int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin){
     int * dejaVu=malloc(sizeof(int)*(s.nbr_valeur_max_attribut+1));
     int taille=1;
-    for(int i=debut;i<fin+1;i++){
-            if(taille=1 || notInList(i,attributchoisie,s,dejaVu,taille)==1){
+    //printf("debut %d\n",debut);
+    dejaVu[0]=taille; //on stocke la taille dans la premiere case de dejaVu
+
+    for(int i=debut;i<fin;i++){
+            if(taille==1 || notInList(attributchoisie,i,s,dejaVu,taille)==1){
                 dejaVu[taille]=i;
+                //printf("dejaVu %d taille %d\n",dejaVu[taille],taille);
+
                 taille++;
             }
     }
     dejaVu[0]=taille; //on stocke la taille dans la premiere case de dejaVu
+
     return dejaVu;
 }
 
+void afficher_trie(stockage s){
+    for(int i=0;i<s.nbr_exemples;i++){
+        for(int j=0;j<s.nbr_attributs;j++){
+                printf("%s ",s.tableau[s.ordre_exemple[i]][j]);
+            }
+        printf("\n");
+    }
+}
 void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
     //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
     //ENleve egalement l'attribut des attributs disponible.
-    int i,j;
+    int i,j,k;
     int ** trie = init_tab(s->nbr_valeur_max_attribut,fin-debut);
     int * valeur_possible=cherche_valeur(*s,attributchoisie,debut,fin);
+    /*for(int i=1;i<valeur_possible[0];i++){
+        printf("valeur i=%d\n",valeur_possible[i]);
+    }*/
     for(i=debut;i<fin+1;i++){
         for(j=0;j<valeur_possible[0];j++){
-            if(strcmp(s->tableau[valeur_possible[j+1]][attributchoisie],s->tableau[i][attributchoisie])==1){
+            if(strcmp(s->tableau[valeur_possible[j+1]][attributchoisie],s->tableau[i][attributchoisie])==0){
+                trie[j][0]++;  
                 trie[j][trie[j][0]]=i;
-                trie[j][0]++;
+               //printf("trie %d ligne j :%d taille_trie %d\n",trie[j][trie[j][0]],j,trie[j][0]);
             }
         }
     }
-    char ** tmp;
-    j=0;
-    for(i=debut;i<fin;i++){
-        tmp=s->tableau[i];
-        s->tableau[i]=s->tableau[trie[j][trie[j][0]]];
-        s->tableau[trie[j][trie[j][0]]]=tmp;
-        trie[j][0]--;
-        if(trie[j][0]==0){
-            j++;
+    k=0;
+    for(i=0;i<valeur_possible[0];i++){
+        //printf("taille %d pour i %d\n",trie[i][0],i);
+        for(j=1;j<trie[i][0]+1;j++){
+            s->ordre_exemple[k]=trie[i][j];
+            k++;
+
         }
     }
+
+    free(valeur_possible);
+
 }
 
 

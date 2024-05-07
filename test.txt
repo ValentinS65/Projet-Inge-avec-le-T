@@ -1,6 +1,18 @@
+<<<<<<< HEAD
 Bonjour ceci est un test etiquette
 7 2 3 4 2 7
 7 2 3 4 1 9
 7 6 3 4 3 6
 7 6 2 4 2 19
 6 2 2 4 1 6
+=======
+Couleur Forme taille prix etiquette
+rouge rond grand 10 0
+bleu carre grand 9 0
+rouge rond petit 2 0
+vert rond grand 18 1
+vert carre petit 5 1
+bleu rond grand 17 0
+violet rond grand 17 0
+rouge rond grand 17 0
+>>>>>>> afcbc50a52f7d3bd4c509929b9f9a2e78dc1a115
