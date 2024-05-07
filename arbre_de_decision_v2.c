@@ -444,28 +444,35 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
     int i,j,k;
     int ** trie = init_tab(s->nbr_valeur_max_attribut,fin-debut);
     int * valeur_possible=cherche_valeur(*s,attributchoisie,debut,fin);
-    /*for(int i=1;i<valeur_possible[0];i++){
+    printf("taille valeur_possible=%d\n",valeur_possible[0]);
+    for(int i=1;i<valeur_possible[0];i++){
         printf("valeur i=%d\n",valeur_possible[i]);
-    }*/
+    }
+    /*
+    for(i=1;i<s->nbr_exemples;i++){
+        printf("%s\n",s->tableau[i][attributchoisie]);
+    }
+    */
     for(i=debut;i<fin+1;i++){
-        for(j=0;j<valeur_possible[0];j++){
-            if(strcmp(s->tableau[valeur_possible[j+1]][attributchoisie],s->tableau[i][attributchoisie])==0){
-                trie[j][0]++;  
-                trie[j][trie[j][0]]=i;
+        for(j=1;j<valeur_possible[0];j++){
+            if(strcmp(s->tableau[valeur_possible[j]][attributchoisie],s->tableau[i][attributchoisie])==0){
+                trie[j-1][0]++;  
+                trie[j-1][trie[j-1][0]]=i;
                //printf("trie %d ligne j :%d taille_trie %d\n",trie[j][trie[j][0]],j,trie[j][0]);
             }
         }
     }
     k=0;
-    for(i=0;i<valeur_possible[0];i++){
+    for(i=0;i<valeur_possible[0]-1;i++){
         //printf("taille %d pour i %d\n",trie[i][0],i);
         for(j=1;j<trie[i][0]+1;j++){
+            //printf("ligne %d pour i %d et j %d\n",trie[i][j],i,j);
+
             s->ordre_exemple[k]=trie[i][j];
             k++;
 
         }
     }
-
     free(valeur_possible);
 
 }

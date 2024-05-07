@@ -12,7 +12,7 @@ int main(){
 
     //afficher_etiquette(e);
     printf("test 3\n");
-    Trie_Stockage_attribut(&e,0,1,e.nbr_exemples);
+    Trie_Stockage_attribut(&e,4,1,e.nbr_exemples);
     afficher_trie(e);
 
     //affiche_attribut(a,e);

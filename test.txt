@@ -1,9 +1,9 @@
-Couleur Forme taille prix etiquette
-rouge rond grand 10 0
-bleu carre grand 9 0
-rouge rond petit 2 0
-vert rond grand 18 1
-vert carre petit 5 1
-bleu rond grand 17 0
-violet rond grand 17 0
-rouge rond grand 17 0
+Couleur Forme taille prix chiffre etiquette
+rouge rond grand 10 1 0
+bleu carre grand 9 2 0
+rouge rond petit 2 2 0
+vert rond grand 18 3 1
+vert carre petit 5 4 1
+bleu rond grand 17 5 0
+violet rond grand 17 4 0
+rouge rond grand 17 7 0
