@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "arbre_de_decision_v2.h"
+#include "stockage.h"
 #include "attribut.h"
 
 double entropie(attribut attr, int index){

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include"arbre_de_decision_v2.h"
+#include"stockage.h"
 #include"attribut.h"
 #include"entropie.h"
 int main(){

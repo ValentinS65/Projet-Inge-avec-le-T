@@ -1,5 +1,5 @@
-#ifndef arbre_de_decision_H
-#define arbre_de_decision_H
+#ifndef stockage_H
+#define stockage_H
 typedef struct stockage{
     char *** tableau;
     char ** liste_attributs_dispo;

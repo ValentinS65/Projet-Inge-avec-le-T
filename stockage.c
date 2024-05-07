@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "arbre_de_decision_v2.h"
+#include "stockage.h"
 
 
 int inList(char ** l, char * mot,int taille){
