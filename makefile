@@ -1,20 +1,20 @@
 all: Main
 
-Main : Main.o entropie.o attribut.o arbre_de_decision_v2.o
-	gcc -o Main Main.o attribut.o arbre_de_decision_v2.o entropie.o -lm -g
+Main : Main.o entropie.o attribut.o stockage.o
+	gcc -o Main Main.o attribut.o stockage.o entropie.o -lm -g
 
 Main.o : Main.c
 	gcc -c Main.c -g
 
-entropie.o : entropie.c entropie.h attribut.o arbre_de_decision_v2.o
+entropie.o : entropie.c entropie.h attribut.o stockage.o
 	gcc -c entropie.c -lm -g
 
 attribut.o : attribut.c attribut.h
 	gcc -c attribut.c -g
 
 
-arbre_de_decision_v2.o :arbre_de_decision_v2.c arbre_de_decision_v2.h
-	gcc -c arbre_de_decision_v2.c -g
+stockage.o :stockage.c stockage.h
+	gcc -c stockage.c -g
 
 clean: 
 	rm -f stockage.o attribut.o entropie.o 

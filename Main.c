@@ -4,7 +4,7 @@
 #include"attribut.h"
 #include"entropie.h"
 int main(){
-    stockage e=extraction_fichier("test.txt");
+    stockage e=extraction_fichier("test2.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
     printf("test 1\n");
     afficher_tableau(e);
@@ -12,8 +12,11 @@ int main(){
 
     //afficher_etiquette(e);
     printf("test 3\n");
-    Trie_Stockage_attribut(&e,4,1,e.nbr_exemples);
+    Trie_Stockage_attribut(&e,0,1,e.nbr_exemples);
     afficher_trie(e);
+    Trie_Stockage_attribut(&e,1,1,5);
+    afficher_trie(e);
+
 
     //affiche_attribut(a,e);
     //printf("L'attribut choisi : %s",e.liste_attributs_dispo[Choix_attribut_noeud(a,e)]);
