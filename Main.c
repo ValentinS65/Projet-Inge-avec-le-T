@@ -11,8 +11,12 @@ int main(){
     //printf("test 2\n");
 
     //afficher_etiquette(e);
-    printf("test 3\n");
-    Trie_Stockage_attribut(&e,4,1,e.nbr_exemples);
+    printf("test 3\n\n");
+    Trie_Stockage_attribut(&e,0,0,e.nbr_exemples);
+    afficher_trie(e);
+    printf("test 4\n\n");
+
+    Trie_Stockage_attribut(&e,1,2,e.nbr_exemples);
     afficher_trie(e);
 
     //affiche_attribut(a,e);
