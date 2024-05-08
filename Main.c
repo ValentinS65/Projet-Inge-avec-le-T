@@ -4,27 +4,22 @@
 #include"attribut.h"
 #include"entropie.h"
 int main(){
-    stockage e=extraction_fichier("test2.txt");
+    stockage e=extraction_fichier("test.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
     printf("test 1\n");
     afficher_tableau(e);
     //printf("test 2\n");
 
     //afficher_etiquette(e);
-<<<<<<< HEAD
     printf("test 3\n\n");
     Trie_Stockage_attribut(&e,0,0,e.nbr_exemples);
     afficher_trie(e);
+
     printf("test 4\n\n");
 
     Trie_Stockage_attribut(&e,1,2,e.nbr_exemples);
-=======
-    printf("test 3\n");
-    Trie_Stockage_attribut(&e,0,1,e.nbr_exemples);
->>>>>>> 0fd351a25a19aa4e1e73f3d0b9198e51a90f366e
     afficher_trie(e);
-    Trie_Stockage_attribut(&e,1,1,5);
-    afficher_trie(e);
+    
 
 
     //affiche_attribut(a,e);

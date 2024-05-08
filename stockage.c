@@ -33,11 +33,14 @@ char ** cherche_etiquette(stockage *s){
 int notInList(int i,int j,stockage s,int * dejaVu, int taille){
     for(int k=0;k<taille;k++){
         //printf("la comparaison passe pour k= %d,i=%d et j=%d\n",k,i,j);
-        printf("comparaison entre %s et %s\n",s.tableau[dejaVu[k]][i],s.tableau[j][i]);
+        //printf("comparaison entre %s et %s\n",s.tableau[dejaVu[k]][i],s.tableau[j][i]);
         if(strcmp(s.tableau[dejaVu[k]][i],s.tableau[j][i])==0){
+           // printf("on retourne 0\n");
             return 0;
         }
     }
+    //printf("on retourne 1\n");
+    
     return 1;
 }
 int cherche_valeur_max(stockage s){
@@ -229,9 +232,10 @@ int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin){
     dejaVu[0]=taille; //on stocke la taille dans la premiere case de dejaVu
 
     for(int i=debut;i<fin;i++){
-            if(i!=0 && (taille==1 || notInList(attributchoisie,i,s,dejaVu,taille)==1) ){
-                dejaVu[taille]=i;
-                printf("dejaVu %d taille %d\n",dejaVu[taille],taille);
+            //printf("i %d ordre_exemple %d\n",i,s.ordre_exemple[i]);
+            if(taille==1 || notInList(attributchoisie,s.ordre_exemple[i],s,dejaVu,taille)==1){
+                dejaVu[taille]=s.ordre_exemple[i];
+                //printf("dejaVu %d taille %d\n",dejaVu[taille],taille);
                 taille++;
 
             }
@@ -264,10 +268,10 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
     else{
         trie=reset_tab(s->nbr_valeur_max_attribut,s->nbr_exemples,trie);
     }
-    printf("taille valeur_possible=%d\n",valeur_possible[0]);
+    /*printf("taille valeur_possible=%d\n",valeur_possible[0]);
     for(int i=1;i<valeur_possible[0];i++){
         printf("valeur i=%d cad %s\n",valeur_possible[i],s->tableau[valeur_possible[i]][attributchoisie]);
-    }
+    }*/
     /*
     for(i=1;i<s->nbr_exemples;i++){
         printf("%s\n",s->tableau[i][attributchoisie]);
@@ -275,12 +279,12 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
     */
     for(i=debut;i<fin;i++){
         for(j=1;j<valeur_possible[0];j++){
-                printf("i :%d ,ordre exemple:%d valeur_possible : %d %s %s\n",i,s->ordre_exemple[i],valeur_possible[j],s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie]);
+                //printf("i :%d ,ordre exemple:%d valeur_possible : %d %s %s\n",i,s->ordre_exemple[i],valeur_possible[j],s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie]);
 
             if(strcmp(s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie])==0){
                 trie[j-1][0]++;  
                 trie[j-1][trie[j-1][0]]=s->ordre_exemple[i];
-                printf("on ajoute\n");
+                //printf("on ajoute\n");
                 //printf("trie %d ligne j :%d taille_trie %d\n",trie[j][trie[j][0]],j,trie[j][0]);
             }
         }
