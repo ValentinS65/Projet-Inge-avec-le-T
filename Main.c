@@ -19,6 +19,11 @@ int main(){
 
     Trie_Stockage_attribut(&e,1,2,e.nbr_exemples);
     afficher_trie(e);
+
+     printf("test 5\n\n");
+
+    Trie_Stockage_attribut(&e,3,3,5);
+    afficher_trie(e);
     
 
 

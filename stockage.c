@@ -43,6 +43,8 @@ int notInList(int i,int j,stockage s,int * dejaVu, int taille){
     
     return 1;
 }
+
+
 int cherche_valeur_max(stockage s){
     int max=0;
     int taille=0;
@@ -247,7 +249,7 @@ int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin){
 
 void afficher_trie(stockage s){
     for(int i=0;i<s.nbr_exemples;i++){
-        printf("ligne %d :",i+1);
+        printf("ligne %d :",i);
         for(int j=0;j<s.nbr_attributs;j++){
                 printf("%s ",s.tableau[s.ordre_exemple[i]][j]);
             }
@@ -268,18 +270,18 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
     else{
         trie=reset_tab(s->nbr_valeur_max_attribut,s->nbr_exemples,trie);
     }
-    /*printf("taille valeur_possible=%d\n",valeur_possible[0]);
+    printf("taille valeur_possible=%d\n",valeur_possible[0]);
     for(int i=1;i<valeur_possible[0];i++){
         printf("valeur i=%d cad %s\n",valeur_possible[i],s->tableau[valeur_possible[i]][attributchoisie]);
-    }*/
+    }
     /*
     for(i=1;i<s->nbr_exemples;i++){
         printf("%s\n",s->tableau[i][attributchoisie]);
     }
     */
-    for(i=debut;i<fin;i++){
+    for(i=debut;i<fin+1;i++){
         for(j=1;j<valeur_possible[0];j++){
-                //printf("i :%d ,ordre exemple:%d valeur_possible : %d %s %s\n",i,s->ordre_exemple[i],valeur_possible[j],s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie]);
+                printf("i :%d ,ordre exemple:%d valeur_possible : %d %s %s\n",i,s->ordre_exemple[i],valeur_possible[j],s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie]);
 
             if(strcmp(s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie])==0){
                 trie[j-1][0]++;  
