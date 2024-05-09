@@ -4,7 +4,7 @@
 #include"attribut.h"
 #include"entropie.h"
 int main(){
-    stockage e=extraction_fichier("test.txt");
+    stockage e=extraction_fichier("test2.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
     printf("test 1\n");
     afficher_tableau(e);
@@ -17,9 +17,14 @@ int main(){
 
     printf("test 4\n\n");
 
-    Trie_Stockage_attribut(&e,1,2,e.nbr_exemples);
+    Trie_Stockage_attribut(&e,1,0,5);
     afficher_trie(e);
-    
+    printf(" test 5\n");
+    Trie_Stockage_attribut(&e,1,6,9);
+    afficher_trie(e);
+    printf(" test 6\n");
+    Trie_Stockage_attribut(&e,1,10,14);
+    afficher_trie(e);
 
 
     //affiche_attribut(a,e);
@@ -36,7 +41,7 @@ int main(){
     //int test1=choix_attribut(e,1,e.nbr_exemples+1);
     //double test2=gain_sans_le_set(attr);
     //printf("Mon test1 sur 'entropie : %d \n",test1);
-    //printf("indice du meilleur attribut : %d",choix_attribut(e,1,e.nbr_exemples+1));
+    printf("indice du meilleur attribut : %d",choix_attribut(e,1,e.nbr_exemples));
     free_stockage(e);
     
 }
