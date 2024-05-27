@@ -142,7 +142,14 @@ stockage extraction_fichier(char * fichier){
     s.ordre_exemple=malloc(sizeof(int)*s.nbr_exemples);
     for(i=0;i<s.nbr_exemples;i++){
         s.ordre_exemple[i]=i+1;
+        printf("taille actuel ordre_exemple : %d et valeur : %d\n",i,i+1);
+
     }
+    printf("taille max ordre_exemple : %d\n",i);
+ 
+
+
+
     fclose(fd);
     return s;
 }
@@ -196,6 +203,24 @@ void free_stockage(stockage s) {
 
     // Libérer la mémoire allouée pour la liste des étiquettes
     free(s.liste_etiquette);
+    free(s.ordre_exemple);
+}
+decoupage init_decoupe(int ** tab_de_trie,int taille_max){
+    int i=0;
+    decoupage new_decoupe;
+    new_decoupe.indice_decoupe=malloc(sizeof(int)*taille_max);
+    while(i<=taille_max && tab_de_trie[i][0]!=0  ){
+        new_decoupe.indice_decoupe[i]=tab_de_trie[i][1];
+        i++;
+    
+    }
+    new_decoupe.nbr_decoupe=i;
+    return new_decoupe;
+
+}
+void free_decoupe(decoupage decoupe){
+    free(decoupe.indice_decoupe);
+
 }
 
 
@@ -249,17 +274,28 @@ int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin){
 
 void afficher_trie(stockage s){
     for(int i=0;i<s.nbr_exemples;i++){
-        printf("ligne %d :",i);
+        printf("ligne %d :",i+1);
         for(int j=0;j<s.nbr_attributs;j++){
                 printf("%s ",s.tableau[s.ordre_exemple[i]][j]);
             }
         printf("\n");
     }
 }
-void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
+
+
+void afficher_decouper(decoupage decoupe){
+    printf("nbr decoupe : %d\n",decoupe.nbr_decoupe);
+    for(int i=0;i<decoupe.nbr_decoupe;i++){
+        printf("indice decoupe : %d\n",decoupe.indice_decoupe[i]);
+    }
+}
+
+
+decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
     //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
     //ENleve egalement l'attribut des attributs disponible.
     int i,j,k;
+    decoupage decoupe;
     static int initialized = 0; // Variable pour vérifier si les tableaux ont étés initialisée
 
     static int ** trie;
@@ -302,7 +338,9 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
 
         }
     }
+    decoupe=init_decoupe(trie,fin-debut);
     free(valeur_possible);
+    return decoupe;
 
 }
 
