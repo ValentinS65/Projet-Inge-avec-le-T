@@ -256,10 +256,14 @@ void afficher_trie(stockage s){
         printf("\n");
     }
 }
-void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
+trie * Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin){
     //Trie la structure stockage pour separer les exemples selon le critère indiqué de la case debut à la case fin.
     //ENleve egalement l'attribut des attributs disponible.
     int i,j,k;
+    //A enlenver juste pour que je test...
+    trie *trieretour=(trie*)malloc(sizeof(trie));
+    trieretour->indice=NULL;
+    trieretour->nb=0;
     static int initialized = 0; // Variable pour vérifier si les tableaux ont étés initialisée
 
     static int ** trie;
@@ -303,6 +307,7 @@ void Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin)
         }
     }
     free(valeur_possible);
+    return trieretour;
 
 }
 

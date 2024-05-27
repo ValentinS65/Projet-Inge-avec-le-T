@@ -1,6 +1,6 @@
 #ifndef attribut_H
 #define attribut_H
-typedef struct{
+typedef struct attribut{
     int nb_colonnes;
     int *nb_elements_par_colonne;
     int ** compteur;

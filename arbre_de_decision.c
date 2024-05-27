@@ -9,48 +9,152 @@
 #define nbr_exemples_minimal 4
 #define MAX_DEPTH 10
 
-noeud ID_3 (stockage s,int debut, int fin,int profondeur){
-    noeud noeud;
-    if (debut-fin<nbr_exemples_minimal){
-        return null;
-    }
-
-    if(profondeur>MAX_DEPTH){
-        return null;
-    }
-
+noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
+    noeud *actuel = (noeud*)malloc(sizeof(noeud));
+    actuel->profondeur = profondeur;
+    actuel->etiquette_counts = NULL;
+    actuel->total_etiquettes = 0;
+    actuel->classe=NULL;
     int flag=1;
     for (int i=debut; i<fin; i++){
-        if (strcmp(s[i][s.nbr_attributs],s[i+1][s.nbr_attributs])!=0){
+        if (strcmp(s.tableau[i][s.nbr_attributs],s.tableau[i+1][s.nbr_attributs])!=0){
             flag=0;
+            break;
         }
     }
 
-    if (flag==0){
-        noeud.attribut=null;
-        noeud.nb_sous_arbres=0;
-        int * tab=malloc(3*sizeof(int));
-        tab[0]=0;
-        tab[1]=debut;
-        tab[2]=fin;
-        noeud.indice_sous_arbres= tab;
-        noeud.profondeur=profondeur;
-        return noeud;
+     if (flag) {
+        // Créer un nœud feuille
+        actuel->attribut = NULL;
+        actuel->nb_sous_arbres = 0;
+        actuel->indice_sous_arbres = (int*)malloc(2* sizeof(int));
+        actuel->indice_sous_arbres[0] = debut;
+        actuel->indice_sous_arbres[1] = fin;
+       
+        actuel->profondeur = profondeur;
+        actuel->sous_arbres = NULL;
+        actuel->classe = s.tableau[debut][s.nbr_attributs];
+        return actuel;
+    }
+    
+
+    if(profondeur>MAX_DEPTH || debut-fin<nbr_exemples_minimal){
+        EtiquetteCount *etiquette_counts = malloc((fin - debut) * sizeof(EtiquetteCount));
+        int unique_count = 0;
+
+        for (int i = debut; i < fin; i++) {
+            char *etiquette = s.tableau[i][s.nbr_attributs];
+            int found = 0;
+            for (int j = 0; j < unique_count; j++) {
+                if (strcmp(etiquette_counts[j].etiquette, etiquette) == 0) {
+                    etiquette_counts[j].count++;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                etiquette_counts[unique_count].etiquette = etiquette;
+                etiquette_counts[unique_count].count = 1;
+                unique_count++;
+            }
+        }
+
+        actuel->etiquette_counts = etiquette_counts;
+        actuel->total_etiquettes = unique_count;
+
+        
+        actuel->attribut = NULL;
+        actuel->nb_sous_arbres = 0;
+        actuel->indice_sous_arbres = (int*)malloc(2 * sizeof(int));
+        actuel->indice_sous_arbres[0] = debut;
+        actuel->indice_sous_arbres[1] = fin;
+
+       
+
+        return actuel;
+    }
+    
+
+    
+    //Choix du meilleur attribut pour l'ensemble
+    int indice=choix_attribut(s,debut,fin);
+
+    //Création du noeud intermediaire
+   
+    actuel->attribut = s.tableau[0][indice];
+    trie* trie=Trie_Stockage_attribut(&s, indice, debut, fin);
+    actuel->indice_sous_arbres = trie->indice;
+    actuel->nb_sous_arbres =trie->nb;
+    actuel->sous_arbres = (noeud**)malloc(actuel->nb_sous_arbres * sizeof(noeud*));
+    
+     for (int i = 0; i < actuel->nb_sous_arbres; i++) {
+        int sub_debut = actuel->indice_sous_arbres[i];
+        int sub_fin = (i == actuel->nb_sous_arbres - 1) ? fin : actuel->indice_sous_arbres[i + 1];
+        actuel->sous_arbres[i] = ID_3(s, sub_debut, sub_fin, profondeur + 1);
     }
 
-    int indice=choix_attribut(s,debut,fin);
-    noeud.attribut=s[0][indice];
-    noeud.indice_sous_arbres=Trie_Stockage_attribut(s,indice,debut,fin);
-    noeud.nb_sous_arbres=0;//Pour l'instant je ne connais pas l'implémentation de valentin
-    for (int i=0;i<noeud.nb_sous_arbres;i++){
-        //JE ne sais pas comment mettre en oeuvre ma recurssion sur tout les sous ensembles
-        int sub_debut = noeud.indice_sous_arbres[i]; // Début du sous-ensemble
-        int sub_fin = (i == noeud.nb_sous_arbres - 1) ? fin : noeud.indice_sous_arbres[i + 1]; // Fin du sous-ensemble
-        noeud.sous_arbres[i] = ID_3(s, sub_debut, sub_fin, profondeur + 1);
-    }   
-    //Je ne conserve qu'un seul noeud = problème
+    return actuel;
+
+
+}
+
+
+char* tirer_au_hasard(EtiquetteCount *etiquette_counts, int unique_count) {
+    int total = 0;
+    for (int i = 0; i < unique_count; i++) {
+        total += etiquette_counts[i].count;
+    }
+
+    int r = rand() % total;
+    int sum = 0;
+    for (int i = 0; i < unique_count; i++) {
+        sum += etiquette_counts[i].count;
+        if (r < sum) {
+            return etiquette_counts[i].etiquette;
+        }
+    }
+
+    return etiquette_counts[unique_count - 1].etiquette;
+}
 
 
 
+char* predire(noeud * arbre, char **exemple,stockage s) {
+    if (arbre == NULL) {
+        return NULL;
+    }
 
+    // Si c'est une feuille, retourner l'étiquette de classe
+    if (arbre->nb_sous_arbres == 0) {
+       if (arbre->classe != NULL) {
+            return arbre->classe;
+        } else {
+            return tirer_au_hasard(arbre->etiquette_counts, arbre->total_etiquettes);
+        }
+    }
+
+    // Trouver l'indice de l'attribut correspondant dans l'exemple
+    int indice_attribut = -1;
+    for (int i = 0; i < s.nbr_attributs; i++) {
+        if (strcmp(s.liste_attributs_dispo[i], arbre->attribut) == 0) {
+            indice_attribut = i;
+            break;
+        }
+    }
+
+    // Si l'attribut n'est pas trouvé, retourner NULL (ou une valeur par défaut)
+    if (indice_attribut == -1) {
+        return NULL;
+    }
+
+    // Parcourir les sous-arbres
+    for (int i = 0; i < arbre->nb_sous_arbres; i++) {
+        int sub_debut = arbre->indice_sous_arbres[i];
+        int sub_fin = (i == arbre->nb_sous_arbres - 1) ? sub_debut : arbre->indice_sous_arbres[i + 1];
+        if (strcmp(exemple[indice_attribut], s.tableau[sub_debut][indice_attribut]) == 0) {
+            return predire(arbre->sous_arbres[i], exemple, s);
+        }
+    }
+
+    return NULL; // Si aucune correspondance n'est trouvée
 }
