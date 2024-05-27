@@ -6,6 +6,7 @@
 int main(){
     stockage e=extraction_fichier("test2.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
+    printf("TAILLE FICHIER %d",e.nbr_exemples);
     printf("test 1\n");
     afficher_tableau(e);
     //printf("test 2\n");
@@ -17,14 +18,14 @@ int main(){
 
     printf("test 4\n\n");
 
-    Trie_Stockage_attribut(&e,1,0,5);
+    Trie_Stockage_attribut(&e,3,0,5);
     afficher_trie(e);
     
     printf(" test 5\n");
     Trie_Stockage_attribut(&e,1,6,9);
     afficher_trie(e);
     printf(" test 6\n");
-    Trie_Stockage_attribut(&e,1,10,14);
+    Trie_Stockage_attribut(&e,1,10,e.nbr_exemples);
     afficher_trie(e);
 
     printf("test 5\n\n");
