@@ -212,7 +212,7 @@ decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s){
         taille++;
     }
     new_decoupe.indice_decoupe=malloc(sizeof(int)*(taille+1));
-    new_decoupe.indice_decoupe[0]=debut+1;
+    new_decoupe.indice_decoupe[0]=debut;
     for(i=0;i<taille;i++){
         curr+=tab_de_trie[i][0];
          new_decoupe.indice_decoupe[pos]=curr;
