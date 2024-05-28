@@ -330,7 +330,7 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
         printf("%s\n",s->tableau[i][attributchoisie]);
     }
     */
-    for(i=debut;i<fin;i++){
+    for(i=debut;i<fin+1;i++){
         for(j=1;j<valeur_possible[0];j++){
                 //printf("i :%d ,ordre exemple:%d valeur_possible : %d %s %s\n",i,s->ordre_exemple[i],valeur_possible[j],s->tableau[valeur_possible[j]][attributchoisie],s->tableau[s->ordre_exemple[i]][attributchoisie]);
 
@@ -353,13 +353,14 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
 
         }
     }
-    
+    /*
     for(i=0;i<s->nbr_valeur_max_attribut;i++){
         for(j=0;j<trie[i][0];j++){
             printf("trie i  j:%d %d %d\n",trie[i][j],i,j);
 
         }
     }
+    */
 
     decoupe=init_decoupe(trie,debut,fin,*s);
     free(valeur_possible);

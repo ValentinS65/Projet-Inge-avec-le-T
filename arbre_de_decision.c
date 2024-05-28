@@ -19,7 +19,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     int flag=1;
     for (int i=debut; i<fin; i++){
         //printf("%s %s",s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1]);
-        if (strcmp(s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1])!=0){
+        if (strcmp(s.tableau[s.ordre_exemple[i]][s.nbr_attributs-1],s.tableau[s.ordre_exemple[1+1]][s.nbr_attributs-1])!=0){
             flag=0;
             printf("PAS UNE FEUILLE\n");
             break;
@@ -37,7 +37,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
        
         actuel->profondeur = profondeur;
         actuel->sous_arbres = NULL;
-        actuel->classe = s.tableau[debut][s.nbr_attributs-1];
+        actuel->classe = s.tableau[s.ordre_exemple[debut]][s.nbr_attributs-1];
         return actuel;
     }
     
@@ -48,7 +48,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
         int unique_count = 0;
 
         for (int i = debut; i < fin; i++) {
-            char *etiquette = s.tableau[i][s.nbr_attributs-1];
+            char *etiquette = s.tableau[s.ordre_exemple[i]][s.nbr_attributs-1];
             int found = 0;
             for (int j = 0; j < unique_count; j++) {
                 if (strcmp(etiquette_counts[j].etiquette, etiquette) == 0) {
@@ -97,7 +97,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     
      for (int i = 0; i < actuel->nb_sous_arbres; i++) {
         int sub_debut = actuel->indice_sous_arbres[i];
-        int sub_fin = (i == actuel->nb_sous_arbres - 1) ? fin : actuel->indice_sous_arbres[i + 1];
+        int sub_fin = (i == actuel->nb_sous_arbres - 1) ? fin : actuel->indice_sous_arbres[i + 1]-1;
         actuel->sous_arbres[i] = ID_3(s, sub_debut, sub_fin, profondeur + 1);
     }
 
@@ -159,7 +159,7 @@ char* predire(noeud * arbre, char **exemple,stockage s) {
     for (int i = 0; i < arbre->nb_sous_arbres; i++) {
         int sub_debut = arbre->indice_sous_arbres[i];
         int sub_fin = (i == arbre->nb_sous_arbres - 1) ? sub_debut : arbre->indice_sous_arbres[i + 1];
-        if (strcmp(exemple[indice_attribut], s.tableau[sub_debut][indice_attribut]) == 0) {
+        if (strcmp(exemple[indice_attribut], s.tableau[s.ordre_exemple[sub_debut]][indice_attribut]) == 0) {
             return predire(arbre->sous_arbres[i], exemple, s);
         }
     }

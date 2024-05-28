@@ -24,8 +24,9 @@ int main(){
     //printf("test 2\n");
     
     //afficher_etiquette(e);
+    
     printf("test 3\n\n");
-    afficher_decouper(Trie_Stockage_attribut(&e,0,0,e.nbr_exemples));
+    afficher_decouper(Trie_Stockage_attribut(&e,0,0,e.nbr_exemples-1));
     afficher_trie(e);
 
     printf("test 4\n\n");
@@ -34,15 +35,15 @@ int main(){
     afficher_trie(e);
     
     printf(" test 5\n");
-    Trie_Stockage_attribut(&e,1,6,9);
+    afficher_decouper(Trie_Stockage_attribut(&e,1,6,9));
     afficher_trie(e);
     printf(" test 6\n");
-    Trie_Stockage_attribut(&e,1,10,e.nbr_exemples);
+    afficher_decouper(Trie_Stockage_attribut(&e,1,10,e.nbr_exemples-1));
     afficher_trie(e);
 
     printf("test 5\n\n");
 
-    Trie_Stockage_attribut(&e,3,3,5);
+    afficher_decouper(Trie_Stockage_attribut(&e,3,3,5));
     afficher_trie(e);
     
 
