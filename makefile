@@ -1,10 +1,18 @@
 all: Main
 
+<<<<<<< HEAD
 Main : Main.o entropie.o attribut.o stockage.o
 	gcc -o Main Main.o attribut.o stockage.o entropie.o -lm -Og -fsanitize=address,leak,undefined
+=======
+Main : Main.o arbre_de_decision.o  entropie.o attribut.o stockage.o
+	gcc -o Main Main.o arbre_de_decision.o attribut.o stockage.o entropie.o -lm -g
+>>>>>>> 1c799ed2e7789110b4b774a901a6c7a632c505ab
 
 Main.o : Main.c
 	gcc -c Main.c -Og -fsanitize=address,leak,undefined
+
+arbre_de_decision.o : arbre_de_decision.c arbre_de_decision.h entropie.o attribut.o stockage.o
+	gcc -c arbre_de_decision.c -lm -g
 
 entropie.o : entropie.c entropie.h attribut.o stockage.o
 	gcc -c entropie.c -lm -Og -fsanitize=address,leak,undefined

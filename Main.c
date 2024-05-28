@@ -21,7 +21,6 @@ int main(){
     afficher_decouper(Trie_Stockage_attribut(&e,1,4,6));
     afficher_trie(e);
     
-    /*
     printf(" test 5\n");
     Trie_Stockage_attribut(&e,1,6,9);
     afficher_trie(e);
@@ -29,7 +28,12 @@ int main(){
     Trie_Stockage_attribut(&e,1,10,e.nbr_exemples);
     afficher_trie(e);
 
-*/
+    printf("test 5\n\n");
+
+    Trie_Stockage_attribut(&e,3,3,5);
+    afficher_trie(e);
+    
+
 
     //affiche_attribut(a,e);
     //printf("L'attribut choisi : %s",e.liste_attributs_dispo[Choix_attribut_noeud(a,e)]);
