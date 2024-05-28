@@ -4,7 +4,7 @@
 #include"attribut.h"
 #include"entropie.h"
 int main(){
-    stockage e=extraction_fichier("test.txt");
+    stockage e=extraction_fichier("test2.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
     printf("TAILLE FICHIER %d",e.nbr_exemples);
     printf("test 1\n");
