@@ -209,11 +209,16 @@ decoupage init_decoupe(int ** tab_de_trie,int taille_max){
     int i=0;
     decoupage new_decoupe;
     new_decoupe.indice_decoupe=malloc(sizeof(int)*taille_max);
-    while(i<=taille_max && tab_de_trie[i][0]!=0  ){
+     printf("taille_max: %d i: %d",taille_max,i);
+
+    while(i<taille_max && tab_de_trie[i][0]!=0  ){
+        printf("i: %d tab :%d\n",i,tab_de_trie[i][1]);
+
         new_decoupe.indice_decoupe[i]=tab_de_trie[i][1];
         i++;
     
     }
+    
     new_decoupe.nbr_decoupe=i;
     return new_decoupe;
 
@@ -226,6 +231,7 @@ void free_decoupe(decoupage decoupe){
 
 int ** init_tab(int lignes,int colonnes){
     int ** tableau;
+    printf("lignes %d",lignes);
     // Allocation de mémoire pour les pointeurs de lignes
     tableau = (int **)malloc(lignes * sizeof(int *));
     if (tableau == NULL) {
@@ -242,7 +248,13 @@ int ** init_tab(int lignes,int colonnes){
         }
         tableau[i][0]=0;
     }
+    /*
+    for(int i=0;i<lignes;i++){
+        for(int j=0;j<tableau[i][0]+1;j++){
+            printf("tab i  j:%d %d %d\n",tableau[i][j],i,j);
 
+        }
+    }*/
     return tableau;
 }
 int** reset_tab(int lignes,int colonnes, int ** tab){
@@ -340,7 +352,14 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
 
         }
     }
-    decoupe=init_decoupe(trie,fin-debut);
+    /*
+    for(i=0;i<s->nbr_valeur_max_attribut;i++){
+        for(j=0;j<trie[i][0];j++){
+            printf("trie i  j:%d %d %d\n",trie[i][j],i,j);
+
+        }
+    }*/
+    decoupe=init_decoupe(trie,s->nbr_valeur_max_attribut);
     free(valeur_possible);
     return decoupe;
 
