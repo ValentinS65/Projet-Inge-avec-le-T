@@ -13,7 +13,7 @@ int main(){
     srand(time(NULL));
 
     noeud *arbre = ID_3(e, 0, e.nbr_exemples-1, 0);
-    char *exemple[] = {"rouge", "rond", "grand","10","1","25","10"}; // Remplissez avec les valeurs des attributs de l'exemple
+    char *exemple[] = {"Nuageux", "Chaud" ,"Elevee", "Faible"}; // Remplissez avec les valeurs des attributs de l'exemple
    
   
 

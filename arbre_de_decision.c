@@ -7,7 +7,7 @@
 #include "entropie.h"
 #include "arbre_de_decision.h"
 #define nbr_exemples_minimal 1
-#define MAX_DEPTH 2
+#define MAX_DEPTH 100
 
 noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     printf("INITIALISE UN NOEUD \n");
