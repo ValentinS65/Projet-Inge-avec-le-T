@@ -56,11 +56,11 @@ double entropie_set(stockage s,int debut, int fin){
 
 
 int choix_attribut(stockage s, int debut, int fin){
-    double entropie_du_set = entropie_set(s, debut, fin+1);
+    double entropie_du_set = entropie_set(s, debut, fin);
     double gain_max = -1.0; // Initialisation de gain_max avec l'entropie du set
     int indice_max = -1;
     for (int i = 0; i < s.nbr_attributs-1; i++){
-        attribut attr = rempli_attribut(s, i, debut, fin+1);
+        attribut attr = rempli_attribut(s, i, debut, fin);
         double gain = gain_sans_le_set(attr); // Calcul du gain pour l'attribut courant
         
         // Ajout du gain pour l'attribut courant à gain_max

@@ -97,7 +97,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     
      for (int i = 0; i < actuel->nb_sous_arbres; i++) {
         int sub_debut = actuel->indice_sous_arbres[i];
-        int sub_fin = (i == actuel->nb_sous_arbres - 1) ? fin : actuel->indice_sous_arbres[i + 1];
+        int sub_fin = (i == actuel->nb_sous_arbres - 1) ? fin : actuel->indice_sous_arbres[i + 1]-1;
         actuel->sous_arbres[i] = ID_3(s, sub_debut, sub_fin, profondeur + 1);
     }
 
@@ -159,7 +159,7 @@ char* predire(noeud * arbre, char **exemple,stockage s) {
     for (int i = 0; i < arbre->nb_sous_arbres; i++) {
         int sub_debut = arbre->indice_sous_arbres[i];
         int sub_fin = (i == arbre->nb_sous_arbres - 1) ? sub_debut : arbre->indice_sous_arbres[i + 1];
-        if (strcmp(exemple[indice_attribut], s.tableau[sub_debut][indice_attribut]) == 0) {
+        if (strcmp(exemple[indice_attribut], s.tableau[s.ordre_exemple[sub_debut]][indice_attribut]) == 0) {
             return predire(arbre->sous_arbres[i], exemple, s);
         }
     }
