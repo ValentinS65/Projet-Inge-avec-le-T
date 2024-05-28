@@ -6,8 +6,8 @@
 #include "attribut.h"
 #include "entropie.h"
 #include "arbre_de_decision.h"
-#define nbr_exemples_minimal 4
-#define MAX_DEPTH 15
+#define nbr_exemples_minimal 1
+#define MAX_DEPTH 2
 
 noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     printf("INITIALISE UN NOEUD \n");
@@ -37,7 +37,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
        
         actuel->profondeur = profondeur;
         actuel->sous_arbres = NULL;
-        actuel->classe = s.tableau[debut][s.nbr_attributs];
+        actuel->classe = s.tableau[debut][s.nbr_attributs-1];
         return actuel;
     }
     
@@ -48,7 +48,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
         int unique_count = 0;
 
         for (int i = debut; i < fin; i++) {
-            char *etiquette = s.tableau[i][s.nbr_attributs];
+            char *etiquette = s.tableau[i][s.nbr_attributs-1];
             int found = 0;
             for (int j = 0; j < unique_count; j++) {
                 if (strcmp(etiquette_counts[j].etiquette, etiquette) == 0) {
@@ -83,11 +83,14 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     printf("CREATION CLASSIQUE");
     //Choix du meilleur attribut pour l'ensemble
     int indice=choix_attribut(s,debut,fin);
+    printf("Indice : %d",indice);
 
     //Création du noeud intermediaire
    
     actuel->attribut = s.tableau[0][indice];
     decoupage trie=Trie_Stockage_attribut(&s, indice, debut, fin);
+    afficher_trie(s);
+    afficher_decouper(trie);
     actuel->indice_sous_arbres = trie.indice_decoupe;
     actuel->nb_sous_arbres =trie.nbr_decoupe;
     actuel->sous_arbres = (noeud**)malloc(actuel->nb_sous_arbres * sizeof(noeud*));
