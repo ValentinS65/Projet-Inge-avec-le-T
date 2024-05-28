@@ -22,7 +22,7 @@ stockage extraction_fichier(char * fichier);
 void afficher_tableau(stockage s);
 void afficher_etiquette(stockage s);
 void free_stockage(stockage s);
-decoupage init_decoupe(int ** tab_de_trie,int taille);
+decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s);
 int ** init_tab(int lignes,int colonnes);
 void afficher_trie(stockage s);
 void afficher_decouper(decoupage decoupe);

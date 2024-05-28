@@ -205,21 +205,20 @@ void free_stockage(stockage s) {
     free(s.liste_etiquette);
     free(s.ordre_exemple);
 }
-decoupage init_decoupe(int ** tab_de_trie,int taille_max){
-    int i=0;
+decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s){
+    int i,curr=debut,pos=1,taille=0;
     decoupage new_decoupe;
-    new_decoupe.indice_decoupe=malloc(sizeof(int)*taille_max);
-     printf("taille_max: %d i: %d",taille_max,i);
-
-    while(i<taille_max && tab_de_trie[i][0]!=0  ){
-        printf("i: %d tab :%d\n",i,tab_de_trie[i][1]);
-
-        new_decoupe.indice_decoupe[i]=tab_de_trie[i][1];
-        i++;
-    
+    while(taille<s.nbr_valeur_max_attribut && tab_de_trie[taille][0]!=0 ){
+        taille++;
     }
-    
-    new_decoupe.nbr_decoupe=i;
+    new_decoupe.indice_decoupe=malloc(sizeof(int)*(taille+1));
+    new_decoupe.indice_decoupe[0]=debut+1;
+    for(i=0;i<taille;i++){
+        curr+=tab_de_trie[i][0];
+         new_decoupe.indice_decoupe[pos]=curr;
+         pos++;
+    }
+    new_decoupe.nbr_decoupe=taille;
     return new_decoupe;
 
 }
@@ -231,7 +230,7 @@ void free_decoupe(decoupage decoupe){
 
 int ** init_tab(int lignes,int colonnes){
     int ** tableau;
-    printf("lignes %d",lignes);
+    //printf("lignes %d",lignes);
     // Allocation de mémoire pour les pointeurs de lignes
     tableau = (int **)malloc(lignes * sizeof(int *));
     if (tableau == NULL) {
@@ -350,14 +349,15 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
 
         }
     }
-    /*
+    
     for(i=0;i<s->nbr_valeur_max_attribut;i++){
         for(j=0;j<trie[i][0];j++){
             printf("trie i  j:%d %d %d\n",trie[i][j],i,j);
 
         }
-    }*/
-    decoupe=init_decoupe(trie,s->nbr_valeur_max_attribut);
+    }
+
+    decoupe=init_decoupe(trie,debut,fin,*s);
     free(valeur_possible);
     return decoupe;
 
