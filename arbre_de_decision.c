@@ -19,7 +19,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     int flag=1;
     for (int i=debut; i<fin; i++){
         //printf("%s %s",s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1]);
-        if (strcmp(s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1])!=0){
+        if (strcmp(s.tableau[s.ordre_exemple[i]][s.nbr_attributs-1],s.tableau[s.ordre_exemple[1+1]][s.nbr_attributs-1])!=0){
             flag=0;
             printf("PAS UNE FEUILLE\n");
             break;
@@ -37,7 +37,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
        
         actuel->profondeur = profondeur;
         actuel->sous_arbres = NULL;
-        actuel->classe = s.tableau[debut][s.nbr_attributs-1];
+        actuel->classe = s.tableau[s.ordre_exemple[debut]][s.nbr_attributs-1];
         return actuel;
     }
     
@@ -48,7 +48,7 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
         int unique_count = 0;
 
         for (int i = debut; i < fin; i++) {
-            char *etiquette = s.tableau[i][s.nbr_attributs-1];
+            char *etiquette = s.tableau[s.ordre_exemple[i]][s.nbr_attributs-1];
             int found = 0;
             for (int j = 0; j < unique_count; j++) {
                 if (strcmp(etiquette_counts[j].etiquette, etiquette) == 0) {
