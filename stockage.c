@@ -218,6 +218,8 @@ decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s){
          new_decoupe.indice_decoupe[pos]=curr;
          pos++;
     }
+    new_decoupe.indice_decoupe[pos]=fin;
+
     new_decoupe.nbr_decoupe=taille;
     return new_decoupe;
 
@@ -296,7 +298,7 @@ void afficher_trie(stockage s){
 
 void afficher_decouper(decoupage decoupe){
     printf("nbr decoupe : %d\n",decoupe.nbr_decoupe);
-    for(int i=0;i<decoupe.nbr_decoupe;i++){
+    for(int i=0;i<decoupe.nbr_decoupe+1;i++){
         printf("indice decoupe : %d\n",decoupe.indice_decoupe[i]);
     }
 }
