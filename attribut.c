@@ -138,7 +138,7 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
 
     }
     
-    affiche_attribut(attr);
+    //affiche_attribut(attr);
     return attr;
 }
 

@@ -7,9 +7,10 @@
 #include "entropie.h"
 #include "arbre_de_decision.h"
 #define nbr_exemples_minimal 4
-#define MAX_DEPTH 10
+#define MAX_DEPTH 15
 
 noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
+    printf("INITIALISE UN NOEUD \n");
     noeud *actuel = (noeud*)malloc(sizeof(noeud));
     actuel->profondeur = profondeur;
     actuel->etiquette_counts = NULL;
@@ -17,13 +18,16 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     actuel->classe=NULL;
     int flag=1;
     for (int i=debut; i<fin; i++){
-        if (strcmp(s.tableau[i][s.nbr_attributs],s.tableau[i+1][s.nbr_attributs])!=0){
+        //printf("%s %s",s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1]);
+        if (strcmp(s.tableau[i][s.nbr_attributs-1],s.tableau[i+1][s.nbr_attributs-1])!=0){
             flag=0;
+            printf("PAS UNE FEUILLE\n");
             break;
         }
     }
 
      if (flag) {
+        printf("CREER UNE FEUILLE\n");
         // Créer un nœud feuille
         actuel->attribut = NULL;
         actuel->nb_sous_arbres = 0;
@@ -38,7 +42,8 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     }
     
 
-    if(profondeur>MAX_DEPTH || debut-fin<nbr_exemples_minimal){
+    if(profondeur>MAX_DEPTH || fin-debut<nbr_exemples_minimal){
+        printf("ON DEPASSE LA PROFONDEUR OU LE NOMBRE DELEMENT");
         EtiquetteCount *etiquette_counts = malloc((fin - debut) * sizeof(EtiquetteCount));
         int unique_count = 0;
 
@@ -75,16 +80,16 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur){
     }
     
 
-    
+    printf("CREATION CLASSIQUE");
     //Choix du meilleur attribut pour l'ensemble
     int indice=choix_attribut(s,debut,fin);
 
     //Création du noeud intermediaire
    
     actuel->attribut = s.tableau[0][indice];
-    trie* trie=Trie_Stockage_attribut(&s, indice, debut, fin);
-    actuel->indice_sous_arbres = trie->indice;
-    actuel->nb_sous_arbres =trie->nb;
+    decoupage trie=Trie_Stockage_attribut(&s, indice, debut, fin);
+    actuel->indice_sous_arbres = trie.indice_decoupe;
+    actuel->nb_sous_arbres =trie.nbr_decoupe;
     actuel->sous_arbres = (noeud**)malloc(actuel->nb_sous_arbres * sizeof(noeud*));
     
      for (int i = 0; i < actuel->nb_sous_arbres; i++) {
@@ -157,4 +162,27 @@ char* predire(noeud * arbre, char **exemple,stockage s) {
     }
 
     return NULL; // Si aucune correspondance n'est trouvée
+}
+
+void afficher_arbre(noeud *arbre, int niveau) {
+    if (arbre == NULL) {
+        return;
+    }
+
+    // Indentation pour montrer le niveau de profondeur
+    for (int i = 0; i < niveau; i++) {
+        printf("    ");
+    }
+
+    // Afficher l'attribut ou l'étiquette de classe
+    if (arbre->nb_sous_arbres == 0) {
+        printf("Feuille: %s\n", arbre->classe);
+    } else {
+        printf("Attribut: %s\n", arbre->attribut);
+    }
+
+    // Afficher récursivement les sous-arbres
+    for (int i = 0; i < arbre->nb_sous_arbres; i++) {
+        afficher_arbre(arbre->sous_arbres[i], niveau + 1);
+    }
 }

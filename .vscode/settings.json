@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "attribut.h": "c"
+        "attribut.h": "c",
+        "arbre_de_decision.h": "c"
     }
 }

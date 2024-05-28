@@ -16,6 +16,9 @@ typedef struct noeud{
     int total_etiquettes; //Nombre d'étiquette differentes de la feuille 
 } noeud;
 
-
+noeud* ID_3 (stockage s,int debut, int fin,int profondeur);
+char* tirer_au_hasard(EtiquetteCount *etiquette_counts, int unique_count);
+char* predire(noeud * arbre, char **exemple,stockage s);
+void afficher_arbre(noeud *arbre, int niveau);
 
 #endif

@@ -22,7 +22,7 @@ char ** cherche_etiquette(stockage *s){
             liste_etiquette[pos]=strdup(s->tableau[i][s->nbr_attributs-1]);
             //printf("etiquette: %s\n",s.tableau[i][s.nbr_attributs-1]);
             s->nbr_etiquette++;
-        printf("nbr_etiquette i:%d\n",s->nbr_etiquette);
+        //printf("nbr_etiquette i:%d\n",s->nbr_etiquette);
 
             pos++;
         }
@@ -90,10 +90,10 @@ stockage extraction_fichier(char * fichier){
     s.nbr_exemples=nbr_lignes;
     s.nbr_etiquette=0;
     //On revient au debut du fichier
-    printf("nbr attributs : %d\n",s.nbr_attributs);
-    printf("nbr exemples : %d\n",s.nbr_exemples);
-    printf("nbr mots : %d\n",nbr_mots);
-    printf("nbr lignes : %d\n",nbr_lignes+1);
+    //printf("nbr attributs : %d\n",s.nbr_attributs);
+    //printf("nbr exemples : %d\n",s.nbr_exemples);
+    //printf("nbr mots : %d\n",nbr_mots);
+    //printf("nbr lignes : %d\n",nbr_lignes+1);
     tableau=malloc(sizeof(char **)*(s.nbr_exemples+1)); //On initialise notre tableau de chaine de caractère
     if (tableau == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
@@ -142,10 +142,10 @@ stockage extraction_fichier(char * fichier){
     s.ordre_exemple=malloc(sizeof(int)*s.nbr_exemples);
     for(i=0;i<s.nbr_exemples;i++){
         s.ordre_exemple[i]=i+1;
-        printf("taille actuel ordre_exemple : %d et valeur : %d\n",i,i+1);
+        //printf("taille actuel ordre_exemple : %d et valeur : %d\n",i,i+1);
 
     }
-    printf("taille max ordre_exemple : %d\n",i);
+    //printf("taille max ordre_exemple : %d\n",i);
  
 
 
@@ -306,10 +306,12 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
     else{
         trie=reset_tab(s->nbr_valeur_max_attribut,s->nbr_exemples,trie);
     }
+    /*
     printf("taille valeur_possible=%d\n",valeur_possible[0]);
     for(int i=1;i<valeur_possible[0];i++){
         printf("valeur i=%d cad %s\n",valeur_possible[i],s->tableau[valeur_possible[i]][attributchoisie]);
     }
+    /*
     /*
     for(i=1;i<s->nbr_exemples;i++){
         printf("%s\n",s->tableau[i][attributchoisie]);
