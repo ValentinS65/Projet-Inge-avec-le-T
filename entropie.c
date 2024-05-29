@@ -67,7 +67,7 @@ int choix_attribut(stockage s, int debut, int fin){
         gain += entropie_du_set;
         //printf("Gain du set n° %d : %f",i,gain);
         // Mise à jour de gain_max et indice_max si gain courant est supérieur à gain_max
-        if (gain > gain_max){
+        if (gain>0 && gain > gain_max){
             gain_max = gain;
             indice_max = i;
         }

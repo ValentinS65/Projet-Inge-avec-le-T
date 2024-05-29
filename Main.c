@@ -7,20 +7,20 @@
 int main(){
     stockage e=extraction_fichier("test2.txt");
     //attribut a=Valeur_Attribut(e,0,e.nbr_etiquette);
-    printf("TAILLE FICHIER %d",e.nbr_exemples);
-    printf("test 1\n");
-    afficher_tableau(e);
+   // printf("TAILLE FICHIER %d",e.nbr_exemples);
+    //printf("test 1\n");
+    //afficher_tableau(e);
     srand(time(NULL));
 
     noeud *arbre = ID_3(e, 0, e.nbr_exemples-1, 0);
-    char *exemple[] = {"Nuageux", "Chaud" ,"Elevee", "Faible"}; // Remplissez avec les valeurs des attributs de l'exemple
+    char *exemple[] = {"Ensoleille", "Moyen" ,"Elevee", "Faible"}; // Remplissez avec les valeurs des attributs de l'exemple
    
   
 
     char *resultat = predire(arbre, exemple,e);
     printf("L'étiquette prédite est : %s\n", resultat);
 
-    //afficher_arbre(arbre,0);
+    afficher_arbre(arbre,0);
     //printf("test 2\n");
     
     //afficher_etiquette(e);
@@ -64,6 +64,10 @@ int main(){
     //double test2=gain_sans_le_set(attr);
     //printf("Mon test1 sur 'entropie : %d \n",test1);
     //printf("indice du meilleur attribut : %d",choix_attribut(e,1,e.nbr_exemples));
+ 
+    attribut attr = rempli_attribut(e, 0, 1, 1);
+    liberer_attribut(&attr, e.nbr_exemples);
+    liberer_arbre(arbre);
     free_stockage(e);
     
 }

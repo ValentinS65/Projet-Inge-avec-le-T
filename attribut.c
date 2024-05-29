@@ -142,5 +142,18 @@ attribut rempli_attribut(stockage s,int index_attribut, int debut, int fin){
     return attr;
 }
 
+void liberer_attribut(attribut *attr, int nb_exemples) {
+    // Libérer chaque tableau de pointeur et compteur
+    for (int i = 0; i < nb_exemples + 1; i++) {
+        free(attr->pointeur[i]); // Libérer le tableau de pointeur
+        free(attr->compteur[i]); // Libérer le tableau de compteur
+    }
+
+    // Libérer les tableaux principaux
+    free(attr->pointeur); // Libérer le tableau des pointeurs
+    free(attr->compteur); // Libérer le tableau des compteurs
+    free(attr->nb_elements_par_colonne); // Libérer le tableau du nombre d'éléments par colonne
+}
+
 
 

@@ -5,6 +5,7 @@ typedef struct EtiquetteCount {
     int count; //Nombre d'apparition 
 } EtiquetteCount;
 typedef struct noeud{
+
     char * attribut; // Attribut qui a coupé cette section
     int  nb_sous_arbres; //Nombre de fils du noeud
     int * indice_sous_arbres;// indice des exemples des fils
@@ -20,5 +21,6 @@ noeud* ID_3 (stockage s,int debut, int fin,int profondeur);
 char* tirer_au_hasard(EtiquetteCount *etiquette_counts, int unique_count);
 char* predire(noeud * arbre, char **exemple,stockage s);
 void afficher_arbre(noeud *arbre, int niveau);
+void liberer_arbre(noeud *arbre);
 
 #endif
