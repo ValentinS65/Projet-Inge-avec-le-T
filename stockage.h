@@ -14,6 +14,7 @@ typedef struct decoupage{
     int * indice_decoupe;
     int nbr_decoupe;
 }decoupage;
+
 int inList(char ** l, char * mot,int taille);
 char ** cherche_etiquette(stockage *s);
 int notInList(int i,int j,stockage s,int * dejaVu, int taille);
@@ -23,7 +24,10 @@ void afficher_tableau(stockage s);
 void afficher_etiquette(stockage s);
 void free_stockage(stockage s);
 decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s);
+void free_decoupe(decoupage decoupe);
 int ** init_tab(int lignes,int colonnes);
+int** reset_tab(int lignes,int colonnes, int ** tab);
+int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin);
 void afficher_trie(stockage s);
 void afficher_decouper(decoupage decoupe);
 decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin);
