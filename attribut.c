@@ -156,4 +156,3 @@ void liberer_attribut(attribut *attr, int nb_exemples) {
 }
 
 
-
