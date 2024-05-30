@@ -13,6 +13,7 @@ typedef struct stockage{
 typedef struct decoupage{
     int * indice_decoupe;
     int nbr_decoupe;
+    int ** tab;
 }decoupage;
 
 int inList(char ** l, char * mot,int taille);
@@ -31,4 +32,6 @@ int * cherche_valeur(stockage s,int attributchoisie,int debut,int fin);
 void afficher_trie(stockage s);
 void afficher_decouper(decoupage decoupe);
 decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int fin);
+void free_trie(decoupage decoupe,stockage s);
+
 #endif 

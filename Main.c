@@ -66,8 +66,10 @@ int main(){
     //printf("indice du meilleur attribut : %d",choix_attribut(e,1,e.nbr_exemples));
  
     attribut attr = rempli_attribut(e, 0, 1, 1);
+    decoupage decoupe = Trie_Stockage_attribut(&e,0,1,1);
     liberer_attribut(&attr, e.nbr_exemples);
     liberer_arbre(arbre);
+    free_trie(decoupe,e);
     free_stockage(e);
     
 }

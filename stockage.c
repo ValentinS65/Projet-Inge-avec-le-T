@@ -224,10 +224,7 @@ decoupage init_decoupe(int ** tab_de_trie,int debut,int fin,stockage s){
     return new_decoupe;
 
 }
-void free_decoupe(decoupage decoupe){
-    free(decoupe.indice_decoupe);
 
-}
 
 
 int ** init_tab(int lignes,int colonnes){
@@ -363,12 +360,20 @@ decoupage Trie_Stockage_attribut(stockage *s, int attributchoisie,int debut, int
     */
 
     decoupe=init_decoupe(trie,debut,fin,*s);
+    decoupe.tab=trie;
     free(valeur_possible);
     return decoupe;
 
 }
 
-
+void free_trie(decoupage decoupe,stockage s){
+    for(int i=0;i<s.nbr_valeur_max_attribut;i++){
+        free(decoupe.tab[i]);
+        
+    }
+    free(decoupe.indice_decoupe);
+    free(decoupe.tab);
+}
 
 
 
